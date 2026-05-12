@@ -1143,6 +1143,22 @@ html, body {
         <div style="color:var(--text2);font-size:13px;">Noch kein Check-In heute — tippe hier zum Eintragen.</div>
       </div>
     </div>
+
+    <!-- Wochenansicht einklappbar -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleWeeklyCollapse()">
+        <div class="card-title" style="margin:0;">📅 Diese Woche</div>
+        <span id="weeklyCollapseIcon" style="font-size:18px;color:var(--text2);transition:transform 0.2s;">▼</span>
+      </div>
+      <div id="weeklyCollapsed" style="display:none;margin-top:14px;">
+        <div id="homeWeekGoals"></div>
+        <div id="homeWeekDays" style="margin-top:12px;"></div>
+        <button class="btn-success" onclick="generateWeeklyRecap()" id="homeRecapBtn" style="margin-top:12px;font-size:13px;padding:10px;">✨ Wochenrückblick</button>
+        <div class="recap-box" id="homeRecapBox" style="display:none;margin-top:10px;">
+          <div class="recap-ai" id="homeRecapContent"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ════════ TRAINING ════════ -->
@@ -1672,19 +1688,35 @@ html, body {
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
           <div>
             <label class="field-label" style="font-size:11px;">Kalorien</label>
-            <div class="num-stepper"><button class="ns-btn" onclick="stepField('fsCalories',-50)">−</button><input class="ns-val field-input" type="number" id="fsCalories" value="0" style="border:none;background:none;width:60px;text-align:center;font-size:16px;font-weight:700;"><button class="ns-btn" onclick="stepField('fsCalories',50)">+</button></div>
+            <div style="display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+              <button onclick="stepField('fsCalories',-50)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">−</button>
+              <input type="number" id="fsCalories" value="0" style="flex:1;border:none;background:none;text-align:center;font-size:14px;font-weight:700;color:var(--text);min-width:0;">
+              <button onclick="stepField('fsCalories',50)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">+</button>
+            </div>
           </div>
           <div>
             <label class="field-label" style="font-size:11px;">Protein (g)</label>
-            <div class="num-stepper"><button class="ns-btn" onclick="stepField('fsProtein',-5)">−</button><input class="ns-val field-input" type="number" id="fsProtein" value="0" style="border:none;background:none;width:60px;text-align:center;font-size:16px;font-weight:700;"><button class="ns-btn" onclick="stepField('fsProtein',5)">+</button></div>
+            <div style="display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+              <button onclick="stepField('fsProtein',-5)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">−</button>
+              <input type="number" id="fsProtein" value="0" style="flex:1;border:none;background:none;text-align:center;font-size:14px;font-weight:700;color:var(--text);min-width:0;">
+              <button onclick="stepField('fsProtein',5)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">+</button>
+            </div>
           </div>
           <div>
             <label class="field-label" style="font-size:11px;">Kohlenhydrate (g)</label>
-            <div class="num-stepper"><button class="ns-btn" onclick="stepField('fsCarbs',-5)">−</button><input class="ns-val field-input" type="number" id="fsCarbs" value="0" style="border:none;background:none;width:60px;text-align:center;font-size:16px;font-weight:700;"><button class="ns-btn" onclick="stepField('fsCarbs',5)">+</button></div>
+            <div style="display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+              <button onclick="stepField('fsCarbs',-5)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">−</button>
+              <input type="number" id="fsCarbs" value="0" style="flex:1;border:none;background:none;text-align:center;font-size:14px;font-weight:700;color:var(--text);min-width:0;">
+              <button onclick="stepField('fsCarbs',5)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">+</button>
+            </div>
           </div>
           <div>
             <label class="field-label" style="font-size:11px;">Fett (g)</label>
-            <div class="num-stepper"><button class="ns-btn" onclick="stepField('fsFat',-5)">−</button><input class="ns-val field-input" type="number" id="fsFat" value="0" style="border:none;background:none;width:60px;text-align:center;font-size:16px;font-weight:700;"><button class="ns-btn" onclick="stepField('fsFat',5)">+</button></div>
+            <div style="display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
+              <button onclick="stepField('fsFat',-5)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">−</button>
+              <input type="number" id="fsFat" value="0" style="flex:1;border:none;background:none;text-align:center;font-size:14px;font-weight:700;color:var(--text);min-width:0;">
+              <button onclick="stepField('fsFat',5)" style="width:36px;height:40px;background:none;border:none;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">+</button>
+            </div>
           </div>
         </div>
         <button class="btn-primary" onclick="importMacros()">✅ Makros übernehmen</button>
@@ -1773,17 +1805,13 @@ html, body {
       <span class="nav-icon">🏠</span>
       <span>Home</span>
     </button>
-    <button class="nav-item" onclick="goTo('training')" id="nav-training">
-      <span class="nav-icon">🏋️</span>
-      <span>Training</span>
-    </button>
-    <button class="nav-item" onclick="goTo('weekly')" id="nav-weekly">
-      <span class="nav-icon">📅</span>
-      <span>Woche</span>
-    </button>
     <button class="nav-item" onclick="goTo('nutrition')" id="nav-nutrition">
       <span class="nav-icon">🍗</span>
       <span>Essen</span>
+    </button>
+    <button class="nav-item" onclick="goTo('training')" id="nav-training">
+      <span class="nav-icon">🏋️</span>
+      <span>Training</span>
     </button>
     <button class="nav-item" onclick="goTo('running')" id="nav-running">
       <span class="nav-icon">🏃</span>
@@ -1850,7 +1878,7 @@ function goTo(name) {
     const nav = document.getElementById('nav-' + name);
     if (screen) { screen.classList.add('active'); screen.scrollTop = 0; }
     if (nav) nav.classList.add('active');
-    if (name === 'home') updateDashboard();
+    if (name === 'home') { updateDashboard(); updateHomeWeekly(); }
     if (name === 'weekly') updateWeeklyView();
     if (name === 'nutrition') initNutrition();
     if (name === 'shopping') generateShoppingList();
@@ -3932,6 +3960,115 @@ function generateShoppingList() {
     } catch(e) { console.error('generateShoppingList:', e); }
 }
 
+function toggleWeeklyCollapse() {
+    const content = document.getElementById('weeklyCollapsed');
+    const icon = document.getElementById('weeklyCollapseIcon');
+    if (!content) return;
+    const isOpen = content.style.display !== 'none';
+    content.style.display = isOpen ? 'none' : 'block';
+    if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    if (!isOpen) updateHomeWeekly();
+}
+
+function updateHomeWeekly() {
+    try {
+        const dates = getWeekDates();
+        const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
+        const weekWorkouts = (appData.workouts||[]).filter(w => w && dates.includes(w.date));
+        const weekRuns = (appData.runs||[]).filter(r => r && r.completed && dates.includes(r.date));
+        const weekStretchDays = [...new Set(weekWorkouts.filter(w => w.focus==='stretching').map(w=>w.date))].length;
+        const weekStrengthDays = [...new Set(weekWorkouts.filter(w => w.focus && w.focus!=='stretching').map(w=>w.date))].length;
+        const weekZone2 = weekRuns.filter(r => r.avgHr && r.avgHr>=ZONE2_MIN && r.avgHr<=ZONE2_MAX).length;
+        const actuals = { strength:weekStrengthDays, runs:weekRuns.length, stretching:weekStretchDays, zone2:weekZone2 };
+
+        const goalsEl = document.getElementById('homeWeekGoals');
+        if (goalsEl) {
+            const defs = [
+                { key:'strength', icon:'🏋️', label:'Krafttraining' },
+                { key:'runs', icon:'🏃', label:'Läufe' },
+                { key:'zone2', icon:'💚', label:'Zone 2' },
+                { key:'stretching', icon:'🧘', label:'Stretching' },
+            ];
+            goalsEl.innerHTML = defs.map(g => {
+                const actual = actuals[g.key], goal = goals[g.key];
+                const pct = Math.min((actual/Math.max(goal,1))*100, 100);
+                const color = actual>=goal ? 'var(--success)' : pct>=50 ? 'var(--warning)' : 'var(--danger)';
+                return `<div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
+                    <span style="font-size:16px;">${g.icon}</span>
+                    <div style="flex:1;">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
+                            <span style="font-size:13px;font-weight:600;">${g.label}</span>
+                            <span style="font-size:13px;font-weight:700;color:${color};">${actual}/${goal}</span>
+                        </div>
+                        <div class="prog-bar" style="height:5px;"><div class="prog-fill" style="width:${pct}%;background:${color};"></div></div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Tage-Übersicht kompakt
+        const daysEl = document.getElementById('homeWeekDays');
+        if (daysEl) {
+            const dayNames = ['Mo','Di','Mi','Do','Fr','Sa','So'];
+            const today = new Date().toISOString().split('T')[0];
+            daysEl.innerHTML = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">` +
+                dates.map((date, i) => {
+                    const hasStrength = weekWorkouts.some(w => w.date===date && w.focus!=='stretching');
+                    const hasRun = weekRuns.some(r => r.date===date);
+                    const hasStretch = weekWorkouts.some(w => w.date===date && w.focus==='stretching');
+                    const isToday = date === today;
+                    const bg = isToday ? 'rgba(255,107,53,0.2)' : 'var(--surface2)';
+                    const border = isToday ? '1px solid var(--accent)' : '1px solid var(--border)';
+                    const icons = `${hasStrength?'🏋️':''}${hasRun?'🏃':''}${hasStretch?'🧘':''}` || '·';
+                    return `<div style="background:${bg};border:${border};border-radius:8px;padding:6px 2px;text-align:center;">
+                        <div style="font-size:10px;font-weight:700;color:var(--text2);">${dayNames[i]}</div>
+                        <div style="font-size:12px;margin-top:3px;">${icons}</div>
+                    </div>`;
+                }).join('') + '</div>';
+        }
+
+        // Recap Buttons umleiten
+        const recapBtn = document.getElementById('homeRecapBtn');
+        if (recapBtn) recapBtn.onclick = () => generateHomeRecap();
+    } catch(e) { console.error('updateHomeWeekly:', e); }
+}
+
+async function generateHomeRecap() {
+    const btn = document.getElementById('homeRecapBtn');
+    const box = document.getElementById('homeRecapBox');
+    const content = document.getElementById('homeRecapContent');
+    if (btn) { btn.disabled=true; btn.innerHTML='<span class="spinner"></span>'; }
+
+    const dates = getWeekDates();
+    const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
+    const weekWorkouts = (appData.workouts||[]).filter(w => w && dates.includes(w.date));
+    const weekRuns = (appData.runs||[]).filter(r => r && r.completed && dates.includes(r.date));
+    const weekStrength = [...new Set(weekWorkouts.filter(w=>w.focus!=='stretching').map(w=>w.date))].length;
+    const weekZone2 = weekRuns.filter(r=>r.avgHr>=ZONE2_MIN&&r.avgHr<=ZONE2_MAX).length;
+
+    const prompt = `Du bist ein motivierender Fitness-Coach. Wochenrückblick auf Deutsch, max 80 Wörter, direkt und motivierend:
+Krafttraining: ${weekStrength}/${goals.strength} | Läufe: ${weekRuns.length}/${goals.runs} | Zone 2: ${weekZone2}/${goals.zone2}
+Ziel: 82→90kg Muskelaufbau`;
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:300, messages:[{role:'user',content:prompt}] })
+        });
+        const data = await res.json();
+        const text = data.content?.find(b=>b.type==='text')?.text || '';
+        if (content) content.textContent = text;
+        if (box) box.style.display = 'block';
+    } catch(e) {
+        const onTrack = weekStrength>=goals.strength && weekRuns.length>=goals.runs;
+        if (content) content.textContent = onTrack ? '💪 Starke Woche! Du bist voll auf Kurs.' : `📋 ${weekStrength}/${goals.strength} Kraft, ${weekRuns.length}/${goals.runs} Läufe. Bleib dran!`;
+        if (box) box.style.display = 'block';
+    } finally {
+        if (btn) { btn.disabled=false; btn.innerHTML='✨ Wochenrückblick'; }
+    }
+}
+
 function showToast(msg, type = 'success') {
     try {
         const t = document.getElementById('toast');
@@ -3988,6 +4125,7 @@ function clearAllData() {
         }
 
         updateDashboard();
+        updateHomeWeekly();
         updateWeightHistory();
         generateCalisthenics();
         generateWorkout();
