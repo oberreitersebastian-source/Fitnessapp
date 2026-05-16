@@ -1153,7 +1153,47 @@ html, body {
       <div id="weeklyCollapsed" style="display:none;margin-top:14px;">
         <div id="homeWeekGoals"></div>
         <div id="homeWeekDays" style="margin-top:12px;"></div>
-        <button class="btn-success" onclick="generateWeeklyRecap()" id="homeRecapBtn" style="margin-top:12px;font-size:13px;padding:10px;">✨ Wochenrückblick</button>
+
+        <!-- Ziele anpassen -->
+        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+          <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Wochenziele anpassen</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label class="field-label" style="font-size:11px;">🏋️ Krafttraining</label>
+              <div class="num-stepper">
+                <button class="ns-btn" onclick="adjustGoal('strength',-1)">−</button>
+                <div class="ns-val" id="goalStrength">4</div>
+                <button class="ns-btn" onclick="adjustGoal('strength',1)">+</button>
+              </div>
+            </div>
+            <div>
+              <label class="field-label" style="font-size:11px;">🏃 Läufe</label>
+              <div class="num-stepper">
+                <button class="ns-btn" onclick="adjustGoal('runs',-1)">−</button>
+                <div class="ns-val" id="goalRuns">3</div>
+                <button class="ns-btn" onclick="adjustGoal('runs',1)">+</button>
+              </div>
+            </div>
+            <div>
+              <label class="field-label" style="font-size:11px;">🧘 Stretching</label>
+              <div class="num-stepper">
+                <button class="ns-btn" onclick="adjustGoal('stretching',-1)">−</button>
+                <div class="ns-val" id="goalStretching">5</div>
+                <button class="ns-btn" onclick="adjustGoal('stretching',1)">+</button>
+              </div>
+            </div>
+            <div>
+              <label class="field-label" style="font-size:11px;">💚 Zone 2 Läufe</label>
+              <div class="num-stepper">
+                <button class="ns-btn" onclick="adjustGoal('zone2',-1)">−</button>
+                <div class="ns-val" id="goalZone2">2</div>
+                <button class="ns-btn" onclick="adjustGoal('zone2',1)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-success" onclick="generateHomeRecap()" id="homeRecapBtn" style="margin-top:12px;font-size:13px;padding:10px;">✨ Wochenrückblick</button>
         <div class="recap-box" id="homeRecapBox" style="display:none;margin-top:10px;">
           <div class="recap-ai" id="homeRecapContent"></div>
         </div>
@@ -1685,7 +1725,7 @@ html, body {
       <!-- FatSecret Import -->
       <div style="background:var(--surface2);border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid var(--border);">
         <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">📱 Von FatSecret übernehmen</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:10px;">
           <div>
             <label class="field-label" style="font-size:11px;">Kalorien</label>
             <div style="display:flex;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
@@ -3066,7 +3106,7 @@ function adjustGoal(key, delta) {
         const capKey = key.charAt(0).toUpperCase() + key.slice(1);
         const el = document.getElementById('goal' + capKey);
         if (el) el.textContent = appData.weeklyGoals[key];
-        updateWeeklyView();
+        updateHomeWeekly();
     } catch(e) { console.error('adjustGoal:', e); }
 }
 
@@ -3077,25 +3117,26 @@ async function generateWeeklyRecap() {
     const dates = getWeekDates();
     const weekWorkouts = (appData.workouts || []).filter(w => w && dates.includes(w.date));
     const weekRuns = (appData.runs || []).filter(r => r && r.completed && dates.includes(r.date));
-    const goals = appData.weeklyGoals;
+    const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
     const weekStrength = [...new Set(weekWorkouts.filter(w => w.focus !== 'stretching').map(w => w.date))].length;
     const weekZone2 = weekRuns.filter(r => r.avgHr >= ZONE2_MIN && r.avgHr <= ZONE2_MAX).length;
     const avgHr = weekRuns.length > 0 ? Math.round(weekRuns.reduce((s,r) => s + (r.avgHr||0), 0) / weekRuns.length) : 0;
 
-    const prompt = `Du bist ein motivierender Fitness-Coach.
+    const prompt = `Du bist ein erfahrener Personal Trainer und Coach.
 
-Diese Woche (Zusammenfassung):
-- Krafttraining: ${weekStrength}/${goals.strength} Sessions (Ziel: ${goals.strength})
-- Läufe: ${weekRuns.length}/${goals.runs} (Ziel: ${goals.runs})
-- Zone 2 Läufe: ${weekZone2}/${goals.zone2} (Ziel: ${goals.zone2})
-- Ø Herzfrequenz Läufe: ${avgHr || 'keine Daten'} bpm (Zone 2: ${ZONE2_MIN}-${ZONE2_MAX})
-- Ziel: 82kg → 90kg Muskelaufbau
+${buildAthleteContext()}
 
-Schreibe einen motivierenden, persönlichen Wochenrückblick (Deutsch, max 120 Wörter):
-- Was war diese Woche gut?
-- Was sollte nächste Woche besser sein?
-- Eine konkrete Empfehlung für nächste Woche
-- Ton: motivierend, direkt, wie ein guter Coach`;
+DIESE WOCHE KONKRET:
+- Krafttraining: ${weekStrength}/${goals.strength} Sessions
+- Läufe: ${weekRuns.length}/${goals.runs} (Ø HR: ${avgHr||'–'} bpm)
+- Zone 2 Läufe: ${weekZone2}/${goals.zone2}
+- Trainierte Gruppen: ${[...new Set(weekWorkouts.map(w=>w.focus).filter(Boolean))].join(', ')||'keine'}
+
+Wochenrückblick (Deutsch, max 150 Wörter, wie ein direkter Coach):
+1. Konkrete Bewertung dieser Woche — was lief gut, was nicht?
+2. Bezug auf Progressionen — sind die Gewichte gestiegen?
+3. Eine spezifische, umsetzbare Empfehlung für nächste Woche
+4. Motivierender Abschluss mit Bezug auf das 90kg-Ziel`;
 
     try {
         const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -3114,8 +3155,8 @@ Schreibe einen motivierenden, persönlichen Wochenrückblick (Deutsch, max 120 W
         const box = document.getElementById('recapBox');
         const onTrack = weekStrength >= goals.strength && weekRuns.length >= goals.runs;
         if (el) el.textContent = onTrack
-            ? `💪 Starke Woche! ${weekStrength} Krafttraining und ${weekRuns.length} Läufe — du bist voll auf Kurs. Nächste Woche: halte die Intensität und achte auf Zone 2 Puls.`
-            : `📋 Diese Woche: ${weekStrength}/${goals.strength} Kraft-Sessions, ${weekRuns.length}/${goals.runs} Läufe. ${weekStrength < goals.strength ? 'Plane nächste Woche feste Trainingszeiten.' : ''} ${weekZone2 < goals.zone2 ? 'Mehr Zone 2 Läufe wären gut für deinen Puls.' : ''}`;
+            ? `💪 Starke Woche! ${weekStrength} Krafttraining und ${weekRuns.length} Läufe — du bist voll auf Kurs.`
+            : `📋 ${weekStrength}/${goals.strength} Kraft-Sessions, ${weekRuns.length}/${goals.runs} Läufe. Nächste Woche nachjustieren!`;
         if (box) box.style.display = 'block';
     } finally {
         if (btn) { btn.disabled = false; btn.innerHTML = '✨ Recap generieren'; }
@@ -3221,21 +3262,24 @@ async function loadSkillCoaching(skillName, levelIndex, skill, prog) {
         ? sessions.map(s => `- ${s.date}: ${s.rating} | Gut: ${s.win || 'nichts notiert'} | Gefehlt: ${s.gap || 'nichts notiert'}`).join('\n')
         : 'Noch keine Sessions geloggt.';
 
-    const prompt = `Du bist ein Calisthenics Coach. Erkläre präzise wie man die folgende Progression trainiert.
+    const prompt = `Du bist ein erfahrener Calisthenics Coach mit Fokus auf Hypertrophie und Skill-Progression.
 
-Skill: ${skillName}
-Aktuelle Progression: ${prog.name}
-Ziel: ${prog.target}
-Schwierigkeit: ${skill.difficulty}
+${buildAthleteContext()}
 
-Bisherige Sessions des Athleten:
+SKILL-DETAILS:
+- Skill: ${skillName} (${skill.difficulty})
+- Aktuelle Progression: Level ${levelIndex + 1} — ${prog.name}
+- Ziel dieser Stufe: ${prog.target}
+
+BISHERIGE SESSIONS (${sessions.length} geloggt):
 ${historyText}
 
-Gib folgendes (auf Deutsch, kurz & konkret, max 150 Wörter):
-1. Technik-Cues: Worauf genau achten?
-2. Häufige Fehler: Was vermeiden?
-3. Progression-Tipp: Wie am schnellsten zum Ziel?
-${sessions.length > 0 ? '4. Feedback auf bisherige Sessions: Was verbessern?' : ''}`;
+Coaching (Deutsch, max 200 Wörter, konkret und direkt):
+1. Technik-Cues: Die 2-3 wichtigsten Punkte für DIESE Progression
+2. Häufige Fehler bei ${prog.name} — was vermeiden?
+3. Progression-Plan: Wie konkret zum Ziel "${prog.target}"? (Reps/Sets/Frequenz)
+${sessions.length > 0 ? `4. Feedback auf letzte Sessions: Was aus den Logs ableiten? Konkrete Anpassung empfehlen.` : '4. Tipp für den Einstieg in diese Progression.'}
+${appData.recovery < 6 ? `5. Recovery heute ${appData.recovery}/10 — Empfehlung zur Intensität.` : ''}`;
 
     try {
         const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -3260,6 +3304,8 @@ ${sessions.length > 0 ? '4. Feedback auf bisherige Sessions: Was verbessern?' : 
         };
         const fb = fallbacks[skillName] || `1. Technik: Kontrollierte Ausführung, voller Bewegungsumfang.\n2. Fehler: Zu viel Schwung — Kraft aufbauen zuerst.\n3. Progression: Täglich üben, auch kurze Sessions zählen.\n`;
         contentEl.innerHTML = `<div style="background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:10px;padding:16px;font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;">${fb}</div>`;
+    } finally {
+        // Coaching geladen — Button ggf. reaktivieren
     }
 }
 
@@ -3379,6 +3425,85 @@ function updateRunStats() {
     } catch(e) { console.error('updateRunStats:', e); }
 }
 
+// ═══════════════════════════════════════════
+// ZENTRALER ATHLETEN-KONTEXT FÜR ALLE COACHINGS
+// ═══════════════════════════════════════════
+function buildAthleteContext() {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+
+        // Gewicht
+        const weights = (appData.weights || []).sort((a,b) => new Date(a.date)-new Date(b.date));
+        const latestWeight = weights.length > 0 ? weights[weights.length-1].weight : 82;
+        const startWeight = weights.length > 0 ? weights[0].weight : 82;
+        const weightTrend = weights.length > 1 ? (latestWeight - startWeight).toFixed(1) : '0';
+
+        // Recovery & Check-In
+        const todayCheckin = (appData.checkins || {})[today];
+        const recovery = appData.recovery || 7;
+        const sleepHours = todayCheckin?.sleepHours || '–';
+        const sleepQuality = todayCheckin?.sleepQuality || '–';
+
+        // Letzte 7 Tage Training
+        const last7 = Array.from({length:7}, (_,i) => {
+            const d = new Date(); d.setDate(d.getDate()-i);
+            return d.toISOString().split('T')[0];
+        });
+        const recentWorkouts = (appData.workouts||[]).filter(w => w && last7.includes(w.date));
+        const recentRuns = (appData.runs||[]).filter(r => r && r.completed && last7.includes(r.date));
+        const trainedGroups = [...new Set(recentWorkouts.map(w=>w.focus).filter(Boolean))];
+
+        // Progressions-Trends (letzte 3 Sessions pro Übung)
+        const progHistory = appData.progressionHistory || {};
+        const progSummary = Object.entries(progHistory)
+            .filter(([_, sessions]) => sessions.length > 0)
+            .map(([name, sessions]) => {
+                const recent = sessions.slice(-3);
+                const latest = recent[recent.length-1];
+                const prev = recent.length > 1 ? recent[recent.length-2] : null;
+                const trend = prev ? (latest.weight > prev.weight ? '↑' : latest.weight < prev.weight ? '↓' : '→') : '–';
+                return `${name}: ${latest.weight}kg×${latest.reps} Wdh. RPE ${latest.rpe} ${trend}`;
+            })
+            .slice(0, 5) // Max 5 Übungen
+            .join('\n');
+
+        // Läufe letzte 4 Sessions
+        const allRuns = (appData.runs||[]).filter(r => r && r.completed && r.distance).slice(-4);
+        const runSummary = allRuns.length > 0
+            ? allRuns.map(r => `${r.date}: ${r.distance}km, ${r.duration}Min, Ø${r.avgHr||'?'}bpm, ${r.pace||'?'}/km, Zone2: ${r.zone2Pct||'?'}%`).join('\n')
+            : 'Noch keine Läufe';
+
+        // Wochenziele
+        const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
+        const weekWorkouts = (appData.workouts||[]).filter(w => w && last7.slice(0,7).includes(w.date));
+        const weekStrength = [...new Set(weekWorkouts.filter(w=>w.focus&&w.focus!=='stretching').map(w=>w.date))].length;
+        const weekRunsDone = recentRuns.length;
+        const weekZone2 = recentRuns.filter(r=>r.avgHr&&r.avgHr>=ZONE2_MIN&&r.avgHr<=ZONE2_MAX).length;
+
+        return `
+ATHLETEN-PROFIL:
+- Gewicht: ${latestWeight}kg (Ziel: 90kg, Trend: ${weightTrend >= 0 ? '+' : ''}${weightTrend}kg seit Start)
+- Alter: ${USER_AGE} Jahre, Zone 2: ${ZONE2_MIN}–${ZONE2_MAX} bpm
+- Fokusgruppen: Rücken (V-Shape), Schultern (Seitdeltoid), Beine (Po+Waden), Arme+Unterarme
+
+HEUTIGER STATUS:
+- Recovery Score: ${recovery}/10
+- Schlaf: ${sleepHours}h, Qualität: ${sleepQuality}/10
+- Befinden: ${todayCheckin ? [todayCheckin.sleepGood&&'erholt', todayCheckin.energyHigh&&'Energie hoch', todayCheckin.noPain&&'keine Schmerzen', todayCheckin.goodAppetite&&'guter Appetit'].filter(Boolean).join(', ')||'keine Angabe' : 'kein Check-In heute'}
+
+DIESE WOCHE (${weekStrength}/${goals.strength} Kraft, ${weekRunsDone}/${goals.runs} Läufe, ${weekZone2}/${goals.zone2} Zone 2):
+- Trainierte Gruppen: ${trainedGroups.join(', ')||'noch keine'}
+
+PROGRESSIONEN (letzte Sessions):
+${progSummary||'Noch keine Daten'}
+
+LAUF-HISTORY (letzte 4):
+${runSummary}`;
+    } catch(e) {
+        return 'Athleten-Kontext nicht verfügbar.';
+    }
+}
+
 function buildLastRunSummary() {
     const runs = (appData.runs || []).filter(r => r && r.completed && r.distance);
     if (runs.length === 0) return 'Noch kein Lauf gespeichert.';
@@ -3394,16 +3519,21 @@ async function getPreRunBriefing() {
 
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Coach denkt…'; }
 
-    const prompt = `Du bist ein professioneller Laufcoach (Zone 2 Fokus).
-Athlet: 82kg, 1.93m, 31 Jahre, Zone 2: ${ZONE2_MIN}–${ZONE2_MAX} bpm
-${buildLastRunSummary()}
-Heute: Gefühl: ${feelingMap[feeling]}, Geplant: ${runTime} Min, Notizen: ${notes || 'keine'}
+    const prompt = `Du bist ein professioneller Laufcoach, spezialisiert auf Zone 2 Training und Ausdaueraufbau.
 
-Erstelle ein konkretes Pre-Run Briefing (auf Deutsch, max 150 Wörter):
-1. Empfohlenes Tempo (min/km)
-2. Herzfrequenz-Ziel (konkrete bpm)
-3. Struktur (Aufwärmen/Hauptteil/Abkühlen)
-4. Ein konkreter Tipp für heute`;
+${buildAthleteContext()}
+
+HEUTE:
+- Gefühl vor dem Lauf: ${feelingMap[feeling]}
+- Geplante Zeit: ${runTime} Min
+- Notizen: ${notes || 'keine'}
+
+Erstelle ein präzises Pre-Run Briefing (Deutsch, max 180 Wörter):
+1. Empfohlenes Starttempo (min/km) — basierend auf letzten Läufen und heutigem Gefühl
+2. Herzfrequenz-Ziel heute (konkrete bpm-Spanne)
+3. Trainingsstruktur: Aufwärmen / Hauptteil / Abkühlen mit Minuten
+4. Ein konkreter Tipp basierend auf dem letzten Lauf
+5. Falls Recovery niedrig (<6): Anpassung empfehlen`;
 
     try {
         const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -3469,15 +3599,24 @@ async function getPostRunAnalysis() {
 
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Analysiere…'; }
 
-    const prompt = `Du bist Laufcoach (Zone 2 Fokus). Zone 2: ${ZONE2_MIN}–${ZONE2_MAX} bpm.
-Letzter Lauf: ${last.distance}km, ${last.duration} Min, Ø ${last.avgHr} bpm, Max ${last.maxHr} bpm, Tempo ${last.pace}, Zone 2: ${last.zone2Pct}%
-${prev ? `Vorheriger: ${prev.distance}km, Ø ${prev.avgHr} bpm` : 'Erster Lauf.'}
+    const prompt = `Du bist ein professioneller Laufcoach, spezialisiert auf Zone 2 Training.
 
-Post-Run Analyse (Deutsch, max 150 Wörter):
-1. Zone 2 Bewertung (✅/⚠️/❌)
-2. Was war gut?
-3. Was verbessern?
-4. Nächster Lauf konkret (Tempo, Distanz, Puls-Ziel)`;
+${buildAthleteContext()}
+
+AKTUELLER LAUF:
+- Distanz: ${last.distance}km in ${last.duration} Min
+- Ø HR: ${last.avgHr} bpm (Zone 2: ${ZONE2_MIN}–${ZONE2_MAX})
+- Max HR: ${last.maxHr} bpm
+- Tempo: ${last.pace} min/km
+- Zone 2 Anteil: ${last.zone2Pct}%
+- Notizen: ${last.notes || 'keine'}
+
+Post-Run Analyse (Deutsch, max 200 Wörter):
+1. Zone 2 Bewertung (✅/⚠️/❌) mit konkreter Begründung
+2. Was war gut — mit Bezug auf Verbesserung gegenüber letztem Lauf
+3. Was konkret verbessern — spezifischer Tipp
+4. Nächster Lauf: Empfohlenes Tempo, Distanz, Puls-Ziel — basierend auf Trend
+5. Bezug auf Recovery (${appData.recovery}/10) wenn relevant`;
 
     try {
         const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -3694,117 +3833,326 @@ function importMacros() {
 
 let recipeGenerating = false;
 
+// ── ECHTER REZEPT POOL ─────────────────────────────────
+const RECIPE_POOL = [
+    {
+        name: 'Hähnchen Teriyaki mit Reis & Brokkoli',
+        emoji: '🍗',
+        portions: 4,
+        prepTime: '25 Min',
+        ingredients: [
+            { amount: '800g', item: 'Hähnchenfilet' },
+            { amount: '400g', item: 'Basmatireis (roh)' },
+            { amount: '400g', item: 'Brokkoli' },
+            { amount: '4 EL', item: 'Sojasoße' },
+            { amount: '2 EL', item: 'Honig' },
+            { amount: '2 Zehen', item: 'Knoblauch' },
+            { amount: '1 EL', item: 'Sesamöl' },
+            { amount: '1 TL', item: 'geriebener Ingwer' },
+        ],
+        steps: [
+            'Reis nach Packungsanweisung kochen (ca. 18 Min).',
+            'Sojasoße, Honig, gepressten Knoblauch und Ingwer zu einer Marinade verrühren.',
+            'Hähnchenfilets in mundgerechte Stücke schneiden, 5 Min in Marinade ziehen lassen.',
+            'Hähnchen in Sesamöl bei mittlerer-hoher Hitze 6-8 Min braten bis karamellisiert.',
+            'Brokkoli in der letzten Minute mitbraten oder parallel 3 Min dämpfen.',
+            'In 4 Behälter aufteilen: Reis, Hähnchen mit Sauce, Brokkoli.',
+        ],
+        macrosPerPortion: { kcal: 520, protein: 52, carbs: 48, fat: 8 },
+        prepTip: 'Soße verdoppeln und separat einfrieren — spart Zeit nächste Woche.',
+        storage: 'Hält 4 Tage im Kühlschrank'
+    },
+    {
+        name: 'Lachs mit Süßkartoffel & Spinat',
+        emoji: '🐟',
+        portions: 4,
+        prepTime: '30 Min',
+        ingredients: [
+            { amount: '600g', item: 'Lachsfilet' },
+            { amount: '800g', item: 'Süßkartoffeln' },
+            { amount: '200g', item: 'Babyspinat' },
+            { amount: '2 EL', item: 'Olivenöl' },
+            { amount: '1 TL', item: 'Paprikapulver' },
+            { amount: '1 TL', item: 'Kreuzkümmel' },
+            { amount: '2 Zehen', item: 'Knoblauch' },
+            { amount: 'nach Geschmack', item: 'Salz, Pfeffer, Zitrone' },
+        ],
+        steps: [
+            'Ofen auf 200°C vorheizen. Süßkartoffeln würfeln (2cm), mit 1 EL Öl, Paprika, Salz vermengen.',
+            'Süßkartoffeln auf Backblech verteilen, 20 Min backen.',
+            'Lachs in Portionen teilen, mit Salz, Pfeffer und Zitronensaft würzen.',
+            'Lachs in Pfanne mit 1 EL Öl 4 Min pro Seite braten — Kerntemperatur 60°C.',
+            'Spinat in derselben Pfanne mit Knoblauch 2 Min zusammenfallen lassen.',
+            'In 4 Behälter aufteilen: Süßkartoffel, Lachs, Spinat.',
+        ],
+        macrosPerPortion: { kcal: 490, protein: 40, carbs: 38, fat: 16 },
+        prepTip: 'Lachs am besten frisch zubereiten — alternativ einfrieren und aufwärmen.',
+        storage: 'Hält 3 Tage im Kühlschrank'
+    },
+    {
+        name: 'Rindfleisch-Bowl mit Kichererbsen & Reis',
+        emoji: '🥩',
+        portions: 5,
+        prepTime: '25 Min',
+        ingredients: [
+            { amount: '700g', item: 'Rinderhack (mager)' },
+            { amount: '400g', item: 'Kichererbsen (Dose, abgetropft)' },
+            { amount: '350g', item: 'Basmatireis (roh)' },
+            { amount: '2', item: 'Zwiebeln' },
+            { amount: '400g', item: 'Tomaten (Dose)' },
+            { amount: '2 TL', item: 'Paprikapulver' },
+            { amount: '1 TL', item: 'Kreuzkümmel' },
+            { amount: '1 TL', item: 'Koriander gemahlen' },
+            { amount: '1 EL', item: 'Olivenöl' },
+        ],
+        steps: [
+            'Reis kochen.',
+            'Zwiebeln würfeln, in Olivenöl 3 Min glasig dünsten.',
+            'Rinderhack zugeben, bei hoher Hitze 5 Min krümelig braten.',
+            'Gewürze (Paprika, Kreuzkümmel, Koriander) zugeben, 1 Min rösten.',
+            'Tomaten und Kichererbsen zugeben, 10 Min köcheln lassen.',
+            'In 5 Behälter aufteilen: Reis und Hack-Kichererbsen-Mix.',
+        ],
+        macrosPerPortion: { kcal: 560, protein: 46, carbs: 52, fat: 14 },
+        prepTip: 'Schmeckt aufgewärmt noch besser — ideal für Büro oder nach dem Training.',
+        storage: 'Hält 5 Tage im Kühlschrank'
+    },
+    {
+        name: 'Thunfisch-Pasta mit Tomaten & Kapern',
+        emoji: '🐟',
+        portions: 4,
+        prepTime: '20 Min',
+        ingredients: [
+            { amount: '3 Dosen', item: 'Thunfisch in Wasser (à 185g)' },
+            { amount: '400g', item: 'Vollkorn-Penne' },
+            { amount: '400g', item: 'Tomaten (Dose)' },
+            { amount: '2 EL', item: 'Kapern' },
+            { amount: '3 Zehen', item: 'Knoblauch' },
+            { amount: '1 EL', item: 'Olivenöl' },
+            { amount: '1 TL', item: 'Oregano' },
+            { amount: 'nach Geschmack', item: 'Chili, Salz, Pfeffer' },
+        ],
+        steps: [
+            'Pasta in Salzwasser al dente kochen (ca. 10 Min), abgießen.',
+            'Knoblauch in Olivenöl 1 Min anschwitzen.',
+            'Tomaten zugeben, 5 Min einkochen, mit Oregano und Chili würzen.',
+            'Abgetropften Thunfisch und Kapern einrühren, 2 Min erhitzen.',
+            'Pasta mit Sauce vermengen.',
+            'In 4 Behälter aufteilen.',
+        ],
+        macrosPerPortion: { kcal: 480, protein: 48, carbs: 50, fat: 6 },
+        prepTip: 'Pasta etwas al dente lassen — beim Aufwärmen gart sie nach.',
+        storage: 'Hält 4 Tage im Kühlschrank'
+    },
+    {
+        name: 'Hähnchen-Kichererbsen Curry',
+        emoji: '🍛',
+        portions: 5,
+        prepTime: '30 Min',
+        ingredients: [
+            { amount: '700g', item: 'Hähnchenfilet' },
+            { amount: '400g', item: 'Kichererbsen (Dose)' },
+            { amount: '400ml', item: 'Kokosmilch (light)' },
+            { amount: '400g', item: 'Tomaten (Dose)' },
+            { amount: '350g', item: 'Basmatireis (roh)' },
+            { amount: '2 EL', item: 'Currypulver' },
+            { amount: '1 TL', item: 'Kurkuma' },
+            { amount: '2 Zehen', item: 'Knoblauch' },
+            { amount: '1', item: 'Zwiebel' },
+        ],
+        steps: [
+            'Reis kochen.',
+            'Hähnchen in Würfel schneiden (3cm). Zwiebel und Knoblauch fein hacken.',
+            'Zwiebel in Pfanne 3 Min anbraten, Knoblauch 1 Min mitbraten.',
+            'Curry und Kurkuma 30 Sek trocken rösten — gibt Tiefe.',
+            'Hähnchen zugeben, 5 Min anbraten.',
+            'Tomaten, Kokosmilch und Kichererbsen zugeben, 15 Min köcheln.',
+            'In 5 Behälter aufteilen mit Reis.',
+        ],
+        macrosPerPortion: { kcal: 510, protein: 44, carbs: 50, fat: 10 },
+        prepTip: 'Curry immer kurz trocken rösten — das macht den Unterschied.',
+        storage: 'Hält 4 Tage im Kühlschrank, oder einfrieren'
+    },
+    {
+        name: 'Tofu & Edamame Reis Bowl',
+        emoji: '🫘',
+        portions: 4,
+        prepTime: '25 Min',
+        ingredients: [
+            { amount: '600g', item: 'fester Tofu' },
+            { amount: '300g', item: 'Edamame (TK, geschält)' },
+            { amount: '400g', item: 'Basmatireis (roh)' },
+            { amount: '2 EL', item: 'Sojasoße' },
+            { amount: '1 EL', item: 'Sesamöl' },
+            { amount: '1 EL', item: 'Reisessig' },
+            { amount: '1 TL', item: 'Ingwer (gerieben)' },
+            { amount: '2', item: 'Karotten' },
+            { amount: '1 EL', item: 'Sesam' },
+        ],
+        steps: [
+            'Tofu gut trocken tupfen, in Würfel schneiden.',
+            'Reis kochen. Edamame 3 Min in kochendem Wasser garen.',
+            'Tofu in Sesamöl 8-10 Min knusprig braten — nicht zu früh wenden!',
+            'Sojasoße, Reisessig und Ingwer zu Dressing verrühren.',
+            'Karotten mit Sparschäler in Streifen hobeln.',
+            'In 4 Behälter aufteilen: Reis, Tofu, Edamame, Karotten. Dressing separat dazu.',
+        ],
+        macrosPerPortion: { kcal: 460, protein: 32, carbs: 52, fat: 12 },
+        prepTip: 'Dressing separat aufbewahren — sonst wird alles weich.',
+        storage: 'Hält 4 Tage im Kühlschrank'
+    },
+    {
+        name: 'Lachs-Onigiri Style Bowl mit Gurke',
+        emoji: '🍱',
+        portions: 4,
+        prepTime: '25 Min',
+        ingredients: [
+            { amount: '600g', item: 'Lachsfilet' },
+            { amount: '400g', item: 'Sushi-Reis oder Basmatireis' },
+            { amount: '1', item: 'Gurke' },
+            { amount: '2', item: 'Avocados' },
+            { amount: '3 EL', item: 'Sojasoße' },
+            { amount: '1 EL', item: 'Sesamöl' },
+            { amount: '1 EL', item: 'Sesam' },
+            { amount: '1', item: 'Zitrone' },
+        ],
+        steps: [
+            'Reis kochen.',
+            'Lachs mit Salz und Pfeffer würzen, in Pfanne 4 Min pro Seite garen.',
+            'Lachs mit Gabel in Stücke zerteilen.',
+            'Gurke in dünne Scheiben schneiden. Avocado würfeln, mit Zitrone beträufeln.',
+            'Sojasoße und Sesamöl zu Dressing mischen.',
+            'In 4 Behälter aufteilen: Reis, Lachs, Gurke, Avocado. Dressing separat.',
+        ],
+        macrosPerPortion: { kcal: 530, protein: 38, carbs: 44, fat: 18 },
+        prepTip: 'Avocado erst kurz vor dem Essen zugeben — hält sich sonst nicht.',
+        storage: 'Hält 3 Tage (ohne Avocado)'
+    },
+    {
+        name: 'Kidney-Bohnen Chili mit Rinderhack',
+        emoji: '🌶️',
+        portions: 6,
+        prepTime: '30 Min',
+        ingredients: [
+            { amount: '700g', item: 'Rinderhack (mager)' },
+            { amount: '800g', item: 'Kidneybohnen (Dose, 2x)' },
+            { amount: '800g', item: 'Tomaten (Dose, 2x)' },
+            { amount: '2', item: 'Zwiebeln' },
+            { amount: '2', item: 'Paprika (rot)' },
+            { amount: '3 Zehen', item: 'Knoblauch' },
+            { amount: '2 TL', item: 'Chilipulver' },
+            { amount: '2 TL', item: 'Kreuzkümmel' },
+            { amount: '1 TL', item: 'Paprikapulver (geräuchert)' },
+        ],
+        steps: [
+            'Zwiebeln, Paprika und Knoblauch würfeln.',
+            'Zwiebeln in Pfanne 3 Min anschwitzen, Knoblauch 1 Min mitbraten.',
+            'Rinderhack zugeben, 5 Min krümelig braten.',
+            'Alle Gewürze zugeben, 1 Min rösten.',
+            'Tomaten und abgetropfte Kidneybohnen zugeben.',
+            '15-20 Min köcheln lassen bis Sauce eindickt. Mit Salz abschmecken.',
+            'In 6 Behälter aufteilen — dazu passt Reis oder Brot.',
+        ],
+        macrosPerPortion: { kcal: 440, protein: 42, carbs: 32, fat: 12 },
+        prepTip: 'Chili schmeckt am nächsten Tag besser — ideal für Meal Prep!',
+        storage: 'Hält 5 Tage, oder einfrieren'
+    },
+    {
+        name: 'Oats Protein Bowl (Overnight oder warm)',
+        emoji: '🥣',
+        portions: 4,
+        prepTime: '10 Min',
+        ingredients: [
+            { amount: '400g', item: 'Haferflocken (Großblatt)' },
+            { amount: '500g', item: 'Skyr' },
+            { amount: '400ml', item: 'Mandelmilch oder Hafermilch' },
+            { amount: '200g', item: 'Beeren (TK oder frisch)' },
+            { amount: '4 EL', item: 'Erdnussbutter' },
+            { amount: '2 EL', item: 'Honig' },
+            { amount: '4 EL', item: 'Chiasamen' },
+            { amount: '1 TL', item: 'Zimt' },
+        ],
+        steps: [
+            'Haferflocken mit Chiasamen und Zimt in einer Schüssel mischen.',
+            'Milch zugeben (ca. 100ml pro Portion), umrühren.',
+            'Skyr unterrühren für cremige Konsistenz.',
+            'In 4 Gläser oder Behälter aufteilen.',
+            'Je 1 EL Erdnussbutter und 1/2 EL Honig obenauf.',
+            'Beeren zugeben. Über Nacht kalt stellen oder direkt warm essen.',
+        ],
+        macrosPerPortion: { kcal: 420, protein: 28, carbs: 48, fat: 12 },
+        prepTip: 'Perfektes Frühstück oder Post-Workout Meal. Beeren erst morgens drauf.',
+        storage: 'Hält 4 Tage im Kühlschrank'
+    },
+    {
+        name: 'Käferbohnen-Hähnchen Eintopf',
+        emoji: '🫘',
+        portions: 5,
+        prepTime: '30 Min',
+        ingredients: [
+            { amount: '700g', item: 'Hähnchenfilet' },
+            { amount: '800g', item: 'Käferbohnen (Dose, 2x)' },
+            { amount: '400g', item: 'Tomaten (Dose)' },
+            { amount: '300g', item: 'Karotten' },
+            { amount: '2', item: 'Zwiebeln' },
+            { amount: '500ml', item: 'Hühnerbrühe' },
+            { amount: '2 TL', item: 'Rosmarin' },
+            { amount: '2 Zehen', item: 'Knoblauch' },
+            { amount: '1 EL', item: 'Olivenöl' },
+        ],
+        steps: [
+            'Hähnchen in große Stücke schneiden, salzen und pfeffern.',
+            'Karotten in Scheiben schneiden. Zwiebeln würfeln.',
+            'Hähnchen in Olivenöl 5 Min anbraten, herausnehmen.',
+            'Zwiebeln und Karotten 3 Min anschwitzen, Knoblauch und Rosmarin zugeben.',
+            'Tomaten, Brühe, Bohnen und Hähnchen zugeben.',
+            '15 Min köcheln bis Hähnchen gar und Sauce cremig.',
+            'In 5 Behälter aufteilen.',
+        ],
+        macrosPerPortion: { kcal: 450, protein: 48, carbs: 36, fat: 8 },
+        prepTip: 'Dazu passt frisches Brot oder einfach pur — sehr sättigend.',
+        storage: 'Hält 5 Tage im Kühlschrank'
+    },
+];
+
 async function generateRecipe(forceNew = false) {
     if (recipeGenerating) return;
     recipeGenerating = true;
 
     const displayEl = document.getElementById('recipeDisplay');
-    if (displayEl) displayEl.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text2);"><span class="spinner"></span> Rezept wird generiert…</div>`;
+    if (displayEl) displayEl.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text2);"><span class="spinner"></span> Rezept wird geladen…</div>`;
 
     const today = new Date().toISOString().split('T')[0];
-    const totalCal = calcTodayCalorieTarget();
-    const protTarget = 140;
-    const portions = Math.floor(Math.random() * 3) + 4; // 4-6
-
-    // Wähle zufällige Zutaten
-    const proteins = USER_PROFILE.proteins;
-    const protein1 = proteins[Math.floor(Math.random() * proteins.length)];
-    const carbSrc = USER_PROFILE.carbs[Math.floor(Math.random() * USER_PROFILE.carbs.length)];
-    const veg1 = USER_PROFILE.veggies[Math.floor(Math.random() * USER_PROFILE.veggies.length)];
-    const veg2 = USER_PROFILE.veggies.filter(v => v !== veg1)[Math.floor(Math.random() * (USER_PROFILE.veggies.length - 1))];
-    const useLegume = Math.random() > 0.5;
-    const legume = useLegume ? USER_PROFILE.legumes[Math.floor(Math.random() * USER_PROFILE.legumes.length)] : null;
-
-    const prompt = `Du bist ein Ernährungscoach und Koch. Erstelle ein Meal Prep Rezept.
-
-Anforderungen:
-- ${portions} Portionen
-- Zubereitung MAX 30 Minuten
-- Hauptprotein: ${protein1}
-- Kohlenhydratquelle: ${carbSrc}
-- Gemüse: ${veg1}, ${veg2}${legume ? `, ${legume}` : ''}
-- Ziel pro Portion: ca. ${Math.round(totalCal / 4)}kcal, min. ${Math.round(protTarget / 3)}g Protein, weniger Carbs als Protein
-- Kein Käse (Mozzarella OK), keine Fisolen
-- Einfach, lecker, alltagstauglich
-
-Antworte NUR als JSON (kein Markdown, kein Text davor/danach):
-{
-  "name": "Rezeptname",
-  "emoji": "passendes Emoji",
-  "portions": ${portions},
-  "prepTime": "XX Min",
-  "ingredients": [
-    {"amount": "500g", "item": "Hähnchenfilet"},
-    ...
-  ],
-  "steps": [
-    "Schritt 1...",
-    "Schritt 2...",
-    ...
-  ],
-  "macrosPerPortion": {
-    "kcal": 520,
-    "protein": 45,
-    "carbs": 38,
-    "fat": 12
-  },
-  "prepTip": "Kurzer Meal Prep Tipp",
-  "storage": "Hält X Tage im Kühlschrank"
-}`;
 
     try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                model: 'claude-sonnet-4-20250514',
-                max_tokens: 1000,
-                messages: [{ role: 'user', content: prompt }]
-            })
-        });
-        const data = await res.json();
-        const text = data.content?.find(b => b.type === 'text')?.text || '';
+        // Wähle Rezept: täglich dasselbe (via Datum-Hash), bei forceNew ein anderes
+        const stored = appData.todayRecipe;
+        let recipe;
 
-        // Parse JSON
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error('Kein JSON gefunden');
-        const recipe = JSON.parse(jsonMatch[0]);
-
-        // Speichere als Tagesrezept
-        appData.todayRecipe = { date: today, recipe };
-        localStorage.setItem('todayRecipe', JSON.stringify(appData.todayRecipe));
+        if (!forceNew && stored && stored.date === today) {
+            // Tagesrezept bereits vorhanden
+            recipe = stored.recipe;
+        } else {
+            // Neues Rezept wählen — nie dasselbe wie heute
+            const usedIndex = (stored && stored.poolIndex !== undefined) ? stored.poolIndex : -1;
+            let newIndex;
+            if (forceNew) {
+                // Zufällig aber nicht dasselbe
+                do { newIndex = Math.floor(Math.random() * RECIPE_POOL.length); }
+                while (newIndex === usedIndex && RECIPE_POOL.length > 1);
+            } else {
+                // Deterministisch via Datum → gleicher Tag = gleiches Rezept
+                const dateNum = today.replace(/-/g,'');
+                newIndex = parseInt(dateNum) % RECIPE_POOL.length;
+            }
+            recipe = RECIPE_POOL[newIndex];
+            appData.todayRecipe = { date: today, recipe, poolIndex: newIndex };
+            localStorage.setItem('todayRecipe', JSON.stringify(appData.todayRecipe));
+        }
 
         renderRecipe(recipe);
     } catch(e) {
-        console.error('generateRecipe:', e);
-        // Fallback Rezept
-        const fallback = {
-            name: `${protein1} mit ${carbSrc} und ${veg1}`,
-            emoji: '🍽️',
-            portions,
-            prepTime: '25 Min',
-            ingredients: [
-                { amount: '800g', item: protein1 },
-                { amount: '400g', item: carbSrc },
-                { amount: '300g', item: veg1 },
-                { amount: '200g', item: veg2 },
-                { amount: '2 EL', item: 'Olivenöl' },
-                { amount: 'nach Geschmack', item: 'Salz, Pfeffer, Knoblauch' }
-            ],
-            steps: [
-                `${protein1} in gleich große Stücke schneiden, würzen.`,
-                `${carbSrc} nach Packungsanleitung kochen (ca. 15-20 Min).`,
-                `${veg1} und ${veg2} in Olivenöl 5-7 Min anbraten.`,
-                `${protein1} in derselben Pfanne 6-8 Min garen.`,
-                'Alles vermischen, abschmecken, in Behälter aufteilen.'
-            ],
-            macrosPerPortion: { kcal: Math.round(totalCal / 4), protein: 42, carbs: 35, fat: 10 },
-            prepTip: 'Alles gleichzeitig vorbereiten spart Zeit.',
-            storage: `Hält 4 Tage im Kühlschrank`
-        };
-        appData.todayRecipe = { date: today, recipe: fallback };
-        localStorage.setItem('todayRecipe', JSON.stringify(appData.todayRecipe));
-        renderRecipe(fallback);
+        renderRecipe(RECIPE_POOL[0]);
     } finally {
         recipeGenerating = false;
     }
@@ -3974,6 +4322,13 @@ function updateHomeWeekly() {
     try {
         const dates = getWeekDates();
         const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
+
+        // Stepper-Displays mit gespeicherten Werten befüllen
+        ['strength','runs','stretching','zone2'].forEach(key => {
+            const capKey = key.charAt(0).toUpperCase() + key.slice(1);
+            const el = document.getElementById('goal' + capKey);
+            if (el) el.textContent = goals[key];
+        });
         const weekWorkouts = (appData.workouts||[]).filter(w => w && dates.includes(w.date));
         const weekRuns = (appData.runs||[]).filter(r => r && r.completed && dates.includes(r.date));
         const weekStretchDays = [...new Set(weekWorkouts.filter(w => w.focus==='stretching').map(w=>w.date))].length;
@@ -4046,9 +4401,17 @@ async function generateHomeRecap() {
     const weekStrength = [...new Set(weekWorkouts.filter(w=>w.focus!=='stretching').map(w=>w.date))].length;
     const weekZone2 = weekRuns.filter(r=>r.avgHr>=ZONE2_MIN&&r.avgHr<=ZONE2_MAX).length;
 
-    const prompt = `Du bist ein motivierender Fitness-Coach. Wochenrückblick auf Deutsch, max 80 Wörter, direkt und motivierend:
+    const prompt = `Du bist ein direkter Personal Trainer.
+
+${buildAthleteContext()}
+
+DIESE WOCHE:
 Krafttraining: ${weekStrength}/${goals.strength} | Läufe: ${weekRuns.length}/${goals.runs} | Zone 2: ${weekZone2}/${goals.zone2}
-Ziel: 82→90kg Muskelaufbau`;
+
+Wochenrückblick (Deutsch, max 100 Wörter, direkt und motivierend):
+- Was konkret gut lief
+- Eine spezifische Empfehlung für nächste Woche
+- Bezug auf 90kg-Ziel`;
 
     try {
         const res = await fetch('https://api.anthropic.com/v1/messages', {
