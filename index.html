@@ -859,6 +859,68 @@ html, body {
   margin: 14px 0;
 }
 
+/* ── REST TIMER ── */
+.rest-timer {
+  display: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  margin: -24px -20px 16px;
+  border-radius: 20px 20px 0 0;
+}
+
+.rest-timer.active { display: block; }
+
+.rest-timer-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.rest-timer-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: conic-gradient(var(--accent) 0%, rgba(255,107,53,0.15) 0%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.rest-timer-inner-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.rest-timer-info { flex: 1; }
+.rest-timer-label { font-size: 12px; color: var(--text2); font-weight: 600; }
+.rest-timer-status { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+.rest-timer-skip {
+  padding: 8px 14px;
+  background: rgba(255,107,53,0.12);
+  border: 1.5px solid rgba(255,107,53,0.3);
+  color: var(--accent);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 /* ── SET TRACKER MODAL ── */
 .st-set-block {
   background: var(--surface2);
@@ -1330,8 +1392,13 @@ html, body {
   <!-- ════════ TRAINING ════════ -->
   <div id="screen-training" class="screen">
     <div class="page-header">
-      <div class="page-title">🏋️ Training</div>
-      <div class="page-subtitle">RP Hypertrophy Methode</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div class="page-title">🏋️ Training</div>
+          <div class="page-subtitle">RP Hypertrophy Methode</div>
+        </div>
+        <button onclick="openTrainingCoach()" style="background:rgba(46,204,113,0.12);border:1.5px solid rgba(46,204,113,0.3);color:var(--success);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;">🤖 Coach</button>
+      </div>
     </div>
 
     <div class="card">
@@ -1375,9 +1442,19 @@ html, body {
       </div>
 
       <button class="btn-primary" onclick="shuffleWorkout()">🎲 Neu würfeln</button>
+      <button class="btn-secondary" onclick="openTrainingCoach()" style="margin-top:8px;">🤖 Training Coach</button>
     </div>
 
     <div id="workoutDisplay"></div>
+
+    <!-- Training Coach Output -->
+    <div id="trainingCoachCard" style="display:none;" class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div class="card-title" style="margin:0;">🤖 Training Coach</div>
+        <button onclick="document.getElementById('trainingCoachCard').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
+      </div>
+      <div id="trainingCoachContent"></div>
+    </div>
   </div>
 
   <!-- ════════ RUNNING ════════ -->
@@ -1599,6 +1676,20 @@ html, body {
     <div class="modal-sheet" style="max-height:88vh;overflow-y:auto;padding-bottom:40px;">
       <div class="modal-handle"></div>
 
+      <!-- Rest Timer (sticky oben) -->
+      <div class="rest-timer" id="restTimer">
+        <div class="rest-timer-inner">
+          <div class="rest-timer-circle" id="restTimerCircle">
+            <div class="rest-timer-inner-circle" id="restTimerCount">0</div>
+          </div>
+          <div class="rest-timer-info">
+            <div class="rest-timer-label">⏱️ Pause</div>
+            <div class="rest-timer-status" id="restTimerStatus">Bereit für nächsten Satz!</div>
+          </div>
+          <button class="rest-timer-skip" onclick="skipRestTimer()">Weiter →</button>
+        </div>
+      </div>
+
       <!-- Header -->
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
         <div>
@@ -1621,6 +1712,31 @@ html, body {
       <button class="add-set-btn" id="stAddSetBtn" onclick="stAddSet()" style="margin-bottom:12px;">+ Satz hinzufügen</button>
 
       <button id="stFinishBtn" onclick="stFinish()" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--success),#27ae60);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">✅ Übung abschließen</button>
+    </div>
+  </div>
+
+  <!-- ════════ TRAINING COACH MODAL ════════ -->
+  <div class="modal-overlay" id="trainingCoachModal">
+    <div class="modal-sheet" style="max-height:90vh;overflow-y:auto;padding-bottom:40px;">
+      <div class="modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div>
+          <div class="modal-title">🤖 Training Coach</div>
+          <div class="modal-sub">Fortschritt & Feedback</div>
+        </div>
+        <button onclick="closeTrainingCoach()" style="background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;">✕</button>
+      </div>
+
+      <!-- Fortschritts-Grafiken -->
+      <div id="coachCharts" style="margin-bottom:16px;"></div>
+
+      <!-- AI Feedback -->
+      <div class="card-title">💬 Coach Feedback</div>
+      <div id="coachFeedback" style="background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:10px;padding:16px;font-size:14px;line-height:1.7;color:var(--text);white-space:pre-wrap;margin-bottom:16px;">
+        <div style="text-align:center;color:var(--text2);"><span class="spinner"></span> Analyse läuft…</div>
+      </div>
+
+      <button class="btn-primary" onclick="closeTrainingCoach()">Schließen</button>
     </div>
   </div>
 
@@ -1966,6 +2082,23 @@ html, body {
     </div>
 
     <div class="card">
+      <div class="card-title">Training</div>
+      <div class="setting-row">
+        <div class="setting-icon">📳</div>
+        <div class="setting-info">
+          <div class="setting-label">Vibration beim Rest Timer</div>
+          <div class="setting-sub">Handy vibriert wenn Pause vorbei</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:48px;height:26px;flex-shrink:0;">
+          <input type="checkbox" id="vibrationToggle" onchange="saveVibrationSetting()" style="opacity:0;width:0;height:0;">
+          <span id="vibrationSlider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--surface2);border:1.5px solid var(--border);border-radius:26px;transition:.3s;">
+            <span style="position:absolute;height:20px;width:20px;left:2px;bottom:2px;background:var(--text2);border-radius:50%;transition:.3s;" id="vibrationKnob"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="setting-row">
         <div class="setting-icon">🎯</div>
         <div class="setting-info">
@@ -2076,9 +2209,59 @@ function goTo(name) {
     if (screen) { screen.classList.add('active'); screen.scrollTop = 0; }
     if (nav) nav.classList.add('active');
     if (name === 'home') { updateDashboard(); updateHomeWeekly(); }
+    if (name === 'training') initTrainingScreen();
     if (name === 'weekly') updateWeeklyView();
     if (name === 'nutrition') initNutrition();
     if (name === 'shopping') generateShoppingList();
+}
+
+function initTrainingScreen() {
+    try {
+        // ── Aktivitäts-Pills immer zurücksetzen ──
+        const actNone = document.getElementById('actNone');
+        if (actNone) actNone.checked = true;
+        ['none','swim','padel','tennis','walk','bike'].forEach(id => {
+            const pill = document.getElementById('apill-' + id);
+            if (pill) pill.classList.toggle('checked', id === 'none');
+        });
+        const durationRow = document.getElementById('activityDurationRow');
+        if (durationRow) durationRow.style.display = 'none';
+        activityDuration = 60;
+
+        // ── Focus Pills: Smart Reset basierend auf letztem Training ──
+        const today = new Date().toISOString().split('T')[0];
+        const recentWorkouts = (appData.workouts || [])
+            .filter(w => w && w.date !== today)
+            .slice(-3);
+        const recentGroups = [...new Set(recentWorkouts.map(w => w.focus).filter(Boolean))];
+
+        // Alle Pills zuerst zurücksetzen
+        const allFocusPills = ['back','legs','shoulders','arms','stretching'];
+        allFocusPills.forEach(g => {
+            const cb = document.getElementById('focus' + g.charAt(0).toUpperCase() + g.slice(1));
+            const pill = document.getElementById('fpill-' + g);
+            if (cb) cb.checked = false;
+            if (pill) pill.classList.remove('checked');
+        });
+
+        // Smart Vorschlag: Gruppen die zuletzt NICHT trainiert wurden
+        // Reihenfolge: Back → Legs → Shoulders → Arms → Stretching
+        const priorityOrder = ['back','legs','shoulders','arms','stretching'];
+        let suggested = priorityOrder.filter(g => !recentGroups.includes(g)).slice(0, 2);
+
+        // Fallback: wenn alles kürzlich trainiert → Standard
+        if (suggested.length === 0) suggested = ['back', 'legs'];
+
+        suggested.forEach(g => {
+            const cb = document.getElementById('focus' + g.charAt(0).toUpperCase() + g.slice(1));
+            const pill = document.getElementById('fpill-' + g);
+            if (cb) cb.checked = true;
+            if (pill) pill.classList.add('checked');
+        });
+
+        // Neues Workout generieren
+        generateWorkout();
+    } catch(e) { console.error('initTrainingScreen:', e); }
 }
 
 // ═══════════════════════════════════════════
@@ -2795,7 +2978,116 @@ function generateWorkout() {
 }
 
 // ═══════════════════════════════════════════
-// RP PROGRESSION ENGINE
+// SETTINGS
+// ═══════════════════════════════════════════
+function saveVibrationSetting() {
+    const cb = document.getElementById('vibrationToggle');
+    if (!cb) return;
+    localStorage.setItem('vibrationEnabled', cb.checked ? '1' : '0');
+    updateVibrationToggleUI(cb.checked);
+    showToast(cb.checked ? '📳 Vibration aktiviert' : '🔕 Vibration deaktiviert', 'success');
+}
+
+function updateVibrationToggleUI(enabled) {
+    const knob = document.getElementById('vibrationKnob');
+    const slider = document.getElementById('vibrationSlider');
+    if (knob) knob.style.transform = enabled ? 'translateX(22px)' : 'translateX(0)';
+    if (knob) knob.style.background = enabled ? '#fff' : 'var(--text2)';
+    if (slider) slider.style.background = enabled ? 'var(--success)' : 'var(--surface2)';
+    if (slider) slider.style.borderColor = enabled ? 'var(--success)' : 'var(--border)';
+}
+
+function loadSettings() {
+    const vibEnabled = localStorage.getItem('vibrationEnabled') !== '0'; // Default: an
+    const cb = document.getElementById('vibrationToggle');
+    if (cb) cb.checked = vibEnabled;
+    updateVibrationToggleUI(vibEnabled);
+}
+
+function isVibrationEnabled() {
+    return localStorage.getItem('vibrationEnabled') !== '0';
+}
+// ═══════════════════════════════════════════
+let restTimerInterval = null;
+let restTimerSeconds = 0;
+let restTimerTotal = 0;
+
+const HEAVY_EXERCISES = ['squat','deadlift','hip thrust','romanian','nordic','split squat','pull-up','row','press','good morning'];
+const MEDIUM_EXERCISES = ['curl','extension','pushdown','upright','front raise','overhead'];
+
+function getRestTime(exName) {
+    const lower = (exName || '').toLowerCase();
+    if (HEAVY_EXERCISES.some(k => lower.includes(k))) return 180; // 3 Min
+    if (MEDIUM_EXERCISES.some(k => lower.includes(k))) return 90;  // 90 Sek
+    return 60; // 60 Sek für Isolation / Myo
+}
+
+function startRestTimer(exName) {
+    stopRestTimer();
+    const seconds = getRestTime(exName);
+    restTimerTotal = seconds;
+    restTimerSeconds = seconds;
+
+    const timerEl = document.getElementById('restTimer');
+    const countEl = document.getElementById('restTimerCount');
+    const statusEl = document.getElementById('restTimerStatus');
+    const circleEl = document.getElementById('restTimerCircle');
+
+    if (timerEl) timerEl.classList.add('active');
+
+    const restLabel = seconds >= 180 ? '3 Min — schwere Grundübung' :
+                      seconds >= 90  ? '90 Sek — mittlere Übung' :
+                                       '60 Sek — Isolation';
+    if (statusEl) statusEl.textContent = restLabel;
+
+    const tick = () => {
+        if (restTimerSeconds <= 0) {
+            stopRestTimer();
+            if (statusEl) statusEl.textContent = '✅ Bereit für nächsten Satz!';
+            if (countEl) countEl.textContent = '✓';
+            // Vibration falls verfügbar und aktiviert
+            if (navigator.vibrate && isVibrationEnabled()) navigator.vibrate([200, 100, 200]);
+            return;
+        }
+
+        restTimerSeconds--;
+        const mins = Math.floor(restTimerSeconds / 60);
+        const secs = restTimerSeconds % 60;
+        if (countEl) countEl.textContent = mins > 0
+            ? `${mins}:${secs.toString().padStart(2,'0')}`
+            : restTimerSeconds;
+
+        // Kreis-Animation
+        const pct = ((restTimerTotal - restTimerSeconds) / restTimerTotal) * 100;
+        if (circleEl) circleEl.style.background =
+            `conic-gradient(var(--accent) ${pct}%, rgba(255,107,53,0.15) ${pct}%)`;
+
+        // Letzte 10 Sek → Warnung
+        if (restTimerSeconds <= 10 && statusEl) {
+            statusEl.textContent = `⚡ Noch ${restTimerSeconds} Sek…`;
+            statusEl.style.color = 'var(--warning)';
+        }
+    };
+
+    tick();
+    restTimerInterval = setInterval(tick, 1000);
+}
+
+function stopRestTimer() {
+    if (restTimerInterval) { clearInterval(restTimerInterval); restTimerInterval = null; }
+}
+
+function skipRestTimer() {
+    stopRestTimer();
+    const timerEl = document.getElementById('restTimer');
+    const statusEl = document.getElementById('restTimerStatus');
+    const countEl = document.getElementById('restTimerCount');
+    const circleEl = document.getElementById('restTimerCircle');
+    if (timerEl) timerEl.classList.remove('active');
+    if (statusEl) { statusEl.textContent = 'Bereit!'; statusEl.style.color = ''; }
+    if (countEl) countEl.textContent = '✓';
+    if (circleEl) circleEl.style.background = 'rgba(255,107,53,0.15)';
+}
 // ═══════════════════════════════════════════
 function getRPRecommendation(exName, recovery) {
     const history = appData.progressionHistory[exName] || [];
@@ -2844,27 +3136,29 @@ function renderExCard(ex) {
     const todaySets = ((appData.setLog||{})[today]||{})[exId] || [];
     const loggedCount = todaySets.filter(s=>s.logged).length;
     const totalSets = todaySets.length;
+    const allLogged = totalSets > 0 && loggedCount === totalSets;
 
     let summary = '';
     if (isStrength) {
         if (totalSets > 0) summary = `${loggedCount}/${totalSets} Sätze geloggt`;
-        else { const rec = getRPRecommendation(ex.name, appData.recovery||7); summary = `${rec.sets} Sätze empfohlen · ${rec.weight>0?rec.weight+'kg':'Gewicht wählen'}`; }
+        else { const rec = getRPRecommendation(ex.name, appData.recovery||7); summary = `${rec.sets} Sätze · ${rec.weight>0?rec.weight+'kg':'Gewicht wählen'}`; }
     } else {
         summary = ex.sets ? `${ex.sets} Sätze · ${ex.reps} Wdh.` : '';
     }
 
     const myoTag = ex.myorep ? `<span class="myorep-badge" style="margin-left:6px;">MYO</span>` : '';
-    const doneIcon = isDone ? '✅' : (isStrength ? '📋' : '○');
+    const statusIcon = isDone ? '✅' : (allLogged ? '🟡' : isStrength ? '📋' : '⭕');
+    const statusBg = isDone ? 'rgba(46,204,113,0.15)' : allLogged ? 'rgba(255,215,0,0.15)' : 'rgba(255,107,53,0.1)';
 
     return `<div class="ex-card ${isDone?'done':''}" id="card-${exId}">
-      <div class="ex-card-header" onclick="${isStrength ? `openSetTracker('${exId}','${safeName}','${group}')` : `toggleEx('${exId}','${safeName}')`}">
+      <div class="ex-card-header" onclick="${isStrength ? `openSetTracker('${exId}','${safeName}','${group}')` : `toggleEx('${exId}','${safeName}')`}" style="padding:14px;">
         <div style="flex:1;min-width:0;">
-          <div class="ex-name" style="font-weight:700;font-size:14px;">${ex.name}${myoTag}</div>
-          <div class="ex-summary ${totalSets>0&&loggedCount>0?'has-data':''}">${summary}</div>
+          <div class="ex-name" style="font-weight:700;font-size:15px;margin-bottom:4px;">${ex.name}${myoTag}</div>
+          <div class="ex-summary ${totalSets>0&&loggedCount>0?'has-data':''}" style="font-size:13px;">${summary}</div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;flex-shrink:0;">
-          ${isStrength ? `<button onclick="event.stopPropagation();openSwapModal('${exId}','${safeName}','${group}')" style="background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.3);color:var(--accent);border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;">🔄</button>` : ''}
-          <div style="width:36px;height:36px;border-radius:10px;background:${isDone?'rgba(46,204,113,0.15)':isStrength?'rgba(255,107,53,0.1)':'var(--surface)'};display:flex;align-items:center;justify-content:center;font-size:17px;">${doneIcon}</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;margin-left:8px;">
+          ${isStrength ? `<button onclick="event.stopPropagation();openSwapModal('${exId}','${safeName}','${group}')" style="width:44px;height:44px;background:rgba(255,107,53,0.12);border:1.5px solid rgba(255,107,53,0.3);color:var(--accent);border-radius:12px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;">🔄</button>` : ''}
+          <div style="width:48px;height:48px;border-radius:12px;background:${statusBg};display:flex;align-items:center;justify-content:center;font-size:26px;">${statusIcon}</div>
         </div>
       </div>
     </div>`;
@@ -2912,9 +3206,21 @@ function openSetTracker(exId, exName, group) {
         if (!appData.setLog) appData.setLog = {};
         if (!appData.setLog[today]) appData.setLog[today] = {};
         if (!appData.setLog[today][exId] || appData.setLog[today][exId].length === 0) {
+            // Erstelle alle Sätze mit gleichem Gewicht/Reps (von RP-Empfehlung)
             appData.setLog[today][exId] = Array.from({length: rec.sets}, () => ({
                 weight: rec.weight || 0, reps: rec.reps || 10, rpe: null, logged: false
             }));
+            localStorage.setItem('setLog', JSON.stringify(appData.setLog));
+        } else {
+            // Bestehende Sätze: Folgesätze mit Werten von Satz 1 auffüllen falls leer
+            const existingSets = appData.setLog[today][exId];
+            const first = existingSets[0];
+            existingSets.forEach((s, i) => {
+                if (i > 0 && !s.logged && !s.weight && first.weight) {
+                    s.weight = first.weight;
+                    s.reps = first.reps;
+                }
+            });
             localStorage.setItem('setLog', JSON.stringify(appData.setLog));
         }
 
@@ -2934,34 +3240,84 @@ function stRenderSets() {
             <div class="st-set-header">
                 <span class="st-set-num">Satz ${i+1}</span>
                 <span class="st-set-status ${s.logged?'done':''}">${s.logged ? `✅ ${s.weight}kg × ${s.reps} Wdh. RPE ${s.rpe||'–'}` : 'Noch offen'}</span>
+                ${!s.logged ? `<button onclick="stDeleteSet(${i})" style="background:none;border:none;color:var(--danger);font-size:18px;cursor:pointer;padding:2px 6px;line-height:1;">🗑️</button>` : ''}
             </div>
             <div class="st-inputs">
                 <div class="st-input-group">
                     <label>Gewicht (kg)</label>
-                    <input type="number" class="st-input ${!s.logged&&s.weight?'suggested':''} ${s.logged?'done-input':''}"
-                        id="stw-${i}" value="${s.weight||''}" placeholder="0" step="2.5" min="0"
-                        ${s.logged?'readonly':''}
-                        onchange="stUpdateVal(${i},'weight',this.value)">
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        ${!s.logged ? `<button onclick="stStep(${i},'weight',-2.5)" style="width:32px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">−</button>` : ''}
+                        <input type="number" class="st-input ${!s.logged&&s.weight?'suggested':''} ${s.logged?'done-input':''}"
+                            id="stw-${i}" value="${s.weight||''}" placeholder="0" step="2.5" min="0"
+                            ${s.logged?'readonly':''}
+                            onchange="stUpdateVal(${i},'weight',this.value)">
+                        ${!s.logged ? `<button onclick="stStep(${i},'weight',2.5)" style="width:32px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">+</button>` : ''}
+                    </div>
                 </div>
                 <div class="st-input-group">
                     <label>Wdh.</label>
-                    <input type="number" class="st-input ${!s.logged&&s.reps?'suggested':''} ${s.logged?'done-input':''}"
-                        id="str-${i}" value="${s.reps||''}" placeholder="0" min="1"
-                        ${s.logged?'readonly':''}
-                        onchange="stUpdateVal(${i},'reps',this.value)">
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        ${!s.logged ? `<button onclick="stStep(${i},'reps',-1)" style="width:32px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">−</button>` : ''}
+                        <input type="number" class="st-input ${!s.logged&&s.reps?'suggested':''} ${s.logged?'done-input':''}"
+                            id="str-${i}" value="${s.reps||''}" placeholder="0" min="1"
+                            ${s.logged?'readonly':''}
+                            onchange="stUpdateVal(${i},'reps',this.value)">
+                        ${!s.logged ? `<button onclick="stStep(${i},'reps',1)" style="width:32px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">+</button>` : ''}
+                    </div>
                 </div>
                 <div class="st-input-group">
                     <label>RPE</label>
-                    <input type="number" class="st-input ${s.logged?'done-input':''}"
-                        id="strpe-${i}" value="${s.rpe||''}" placeholder="7" min="1" max="10"
-                        ${s.logged?'readonly':''}
-                        onchange="stUpdateVal(${i},'rpe',this.value)">
+                    <div style="display:flex;align-items:center;gap:4px;">
+                        ${!s.logged ? `<button onclick="stStep(${i},'rpe',-1)" style="width:32px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">−</button>` : ''}
+                        <input type="number" class="st-input ${s.logged?'done-input':''}"
+                            id="strpe-${i}" value="${s.rpe||''}" placeholder="7" min="1" max="10"
+                            ${s.logged?'readonly':''}
+                            onchange="stUpdateVal(${i},'rpe',this.value)">
+                        ${!s.logged ? `<button onclick="stStep(${i},'rpe',1)" style="width:32px;height:44px;background:var(--surface);border:1.5px solid var(--border);border-radius:8px;color:var(--accent);font-size:20px;cursor:pointer;flex-shrink:0;">+</button>` : ''}
+                    </div>
                 </div>
             </div>
             <button class="st-log-btn ${s.logged?'logged':''}" onclick="stLogSet(${i})">
                 ${s.logged ? '✓ Geloggt — tippen zum Rückgängig' : '○ Satz abschließen'}
             </button>
         </div>`).join('');
+}
+
+function stStep(setIndex, field, delta) {
+    const today = new Date().toISOString().split('T')[0];
+    if (!appData.setLog?.[today]?.[stCurrentExId]?.[setIndex]) return;
+    const set = appData.setLog[today][stCurrentExId][setIndex];
+    const current = parseFloat(set[field]) || 0;
+    const min = field === 'rpe' ? 1 : 0;
+    const max = field === 'rpe' ? 10 : 9999;
+    set[field] = Math.max(min, Math.min(max, parseFloat((current + delta).toFixed(1))));
+    localStorage.setItem('setLog', JSON.stringify(appData.setLog));
+    // Update Input direkt
+    const el = document.getElementById(`st${field==='weight'?'w':field==='reps'?'r':'rpe'}-${setIndex}`);
+    if (el) el.value = set[field];
+}
+
+function stDeleteSet(setIndex) {
+    const today = new Date().toISOString().split('T')[0];
+    if (!appData.setLog?.[today]?.[stCurrentExId]) return;
+    const sets = appData.setLog[today][stCurrentExId];
+    if (sets.length <= 1) { showToast('Mindestens 1 Satz nötig', 'error'); return; }
+    sets.splice(setIndex, 1);
+    localStorage.setItem('setLog', JSON.stringify(appData.setLog));
+    stRenderSets();
+    stUpdateCardSummary();
+}
+
+function stUpdateCardSummary() {
+    const today = new Date().toISOString().split('T')[0];
+    const sets = appData.setLog?.[today]?.[stCurrentExId] || [];
+    const logged = sets.filter(s=>s.logged).length;
+    const card = document.getElementById('card-'+stCurrentExId);
+    const summary = card?.querySelector('.ex-summary');
+    if (summary) {
+        summary.textContent = `${logged}/${sets.length} Sätze geloggt`;
+        summary.classList.toggle('has-data', logged > 0);
+    }
 }
 
 function stUpdateVal(setIndex, field, value) {
@@ -2996,28 +3352,20 @@ function stLogSet(setIndex) {
 
     stRenderSets();
     stUpdateCardSummary();
+
+    // Rest Timer starten wenn Satz geloggt (nicht beim Rückgängig)
+    if (set.logged) startRestTimer(stCurrentExName);
 }
 
 function stAddSet() {
     const today = new Date().toISOString().split('T')[0];
     if (!appData.setLog?.[today]?.[stCurrentExId]) return;
     const sets = appData.setLog[today][stCurrentExId];
-    const last = sets[sets.length-1] || { weight:0, reps:10 };
-    sets.push({ weight: last.weight, reps: last.reps, rpe: null, logged: false });
+    // Immer Werte vom ersten Satz übernehmen (nicht letztem)
+    const first = sets[0] || { weight:0, reps:10 };
+    sets.push({ weight: first.weight, reps: first.reps, rpe: null, logged: false });
     localStorage.setItem('setLog', JSON.stringify(appData.setLog));
     stRenderSets();
-}
-
-function stUpdateCardSummary() {
-    const today = new Date().toISOString().split('T')[0];
-    const sets = appData.setLog?.[today]?.[stCurrentExId] || [];
-    const logged = sets.filter(s=>s.logged).length;
-    const card = document.getElementById('card-'+stCurrentExId);
-    const summary = card?.querySelector('.ex-summary');
-    if (summary) {
-        summary.textContent = `${logged}/${sets.length} Sätze geloggt`;
-        summary.classList.toggle('has-data', logged > 0);
-    }
 }
 
 function stFinish() {
@@ -3038,12 +3386,185 @@ function stFinish() {
 
     const avgRpe = (logged.reduce((s,e)=>s+(e.rpe||7),0)/logged.length).toFixed(1);
     closeSetTrackerModal();
-    showToast(`✅ ${logged.length} Sätze · Ø RPE ${avgRpe}`, 'success');
+
+    // Motivations-Toast
+    const msgs = [
+        `💪 ${stCurrentExName} erledigt! ${logged.length} Sätze, Ø RPE ${avgRpe}`,
+        `🔥 Stark! ${logged.length} Sätze ${stCurrentExName} — weiter so!`,
+        `✅ ${stCurrentExName} abgehakt! RPE ${avgRpe} — gute Intensität!`,
+        `🚀 ${logged.length} Sätze down! Nächste Session wird schwerer.`,
+    ];
+    showToast(msgs[Math.floor(Math.random()*msgs.length)], 'success');
+
+    // Prüfe ob alle Übungen fertig sind
+    checkWorkoutComplete();
+}
+
+// ═══════════════════════════════════════════
+// TRAINING COACH
+// ═══════════════════════════════════════════
+function openTrainingCoach() {
+    const modal = document.getElementById('trainingCoachModal');
+    if (modal) modal.classList.add('show');
+    renderCoachCharts();
+    loadCoachFeedback();
+}
+
+function closeTrainingCoach() {
+    const modal = document.getElementById('trainingCoachModal');
+    if (modal) modal.classList.remove('show');
+}
+
+function renderCoachCharts() {
+    const el = document.getElementById('coachCharts');
+    if (!el) return;
+
+    const history = appData.progressionHistory || {};
+    const today = new Date().toISOString().split('T')[0];
+
+    // Top 3 Übungen nach Anzahl Sessions
+    const topExercises = Object.entries(history)
+        .filter(([_, sessions]) => sessions.length >= 2)
+        .sort((a,b) => b[1].length - a[1].length)
+        .slice(0, 3);
+
+    if (topExercises.length === 0) {
+        el.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text2);font-size:13px;">Noch zu wenig Daten — logge mehr Trainingseinheiten für Grafiken.</div>`;
+        return;
+    }
+
+    el.innerHTML = topExercises.map(([exName, sessions]) => {
+        // Gruppiere nach Datum, nehme max Gewicht pro Session
+        const byDate = {};
+        sessions.forEach(s => {
+            if (!byDate[s.date] || s.weight > byDate[s.date]) byDate[s.date] = s.weight;
+        });
+        const dates = Object.keys(byDate).sort();
+        const weights = dates.map(d => byDate[d]);
+        const maxW = Math.max(...weights);
+        const minW = Math.min(...weights);
+        const range = maxW - minW || 1;
+        const trend = weights.length > 1 ? weights[weights.length-1] - weights[0] : 0;
+        const trendColor = trend > 0 ? 'var(--success)' : trend < 0 ? 'var(--danger)' : 'var(--text2)';
+        const trendIcon = trend > 0 ? '↑' : trend < 0 ? '↓' : '→';
+
+        // Mini-Balkendiagramm
+        const bars = weights.map((w, i) => {
+            const h = Math.max(20, Math.round(((w - minW) / range) * 60) + 20);
+            const isLast = i === weights.length - 1;
+            return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;">
+                <div style="font-size:9px;color:var(--text2);">${w}kg</div>
+                <div style="width:100%;max-width:28px;height:${h}px;background:${isLast?'var(--accent)':'rgba(255,107,53,0.35)'};border-radius:4px 4px 0 0;"></div>
+                <div style="font-size:9px;color:var(--text2);">${dates[i].slice(5)}</div>
+            </div>`;
+        }).join('');
+
+        return `<div style="background:var(--surface2);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div style="font-weight:700;font-size:13px;">${exName}</div>
+                <div style="font-size:13px;font-weight:800;color:${trendColor};">${trendIcon} ${trend>0?'+':''}${trend.toFixed(1)}kg</div>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:4px;height:90px;">${bars}</div>
+            <div style="margin-top:8px;font-size:11px;color:var(--text2);">
+                ${sessions.length} Sessions · Max: ${maxW}kg · Aktuell: ${weights[weights.length-1]}kg
+            </div>
+        </div>`;
+    }).join('');
+}
+
+async function loadCoachFeedback() {
+    const el = document.getElementById('coachFeedback');
+    if (!el) return;
+
+    const history = appData.progressionHistory || {};
+    const topExercises = Object.entries(history)
+        .filter(([_, s]) => s.length >= 2)
+        .sort((a,b) => b[1].length - a[1].length)
+        .slice(0, 5);
+
+    const progressSummary = topExercises.map(([name, sessions]) => {
+        const first = sessions[0];
+        const last = sessions[sessions.length-1];
+        const avgRpe = (sessions.reduce((s,e)=>s+(e.rpe||7),0)/sessions.length).toFixed(1);
+        return `${name}: ${first.weight}kg → ${last.weight}kg (${sessions.length} Sessions, Ø RPE ${avgRpe})`;
+    }).join('\n');
+
+    const prompt = `Du bist ein erfahrener Personal Trainer und Kraft-Coach.
+
+${buildAthleteContext()}
+
+TRAININGS-PROGRESSIONEN (bisherige Entwicklung):
+${progressSummary || 'Noch keine ausreichenden Daten'}
+
+Gib konkretes Coaching-Feedback (Deutsch, max 200 Wörter):
+1. Welche Übungen entwickeln sich gut? Warum?
+2. Wo siehst du Stagnation oder Probleme?
+3. Eine konkrete Empfehlung für die nächsten 2 Wochen
+4. Motivierender Abschluss mit Bezug auf das 90kg-Ziel`;
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, messages: [{ role: 'user', content: prompt }] })
+        });
+        const data = await res.json();
+        const text = data.content?.find(b=>b.type==='text')?.text || 'Kein Feedback verfügbar.';
+        if (el) el.textContent = text;
+    } catch(e) {
+        if (topExercises.length === 0) {
+            if (el) el.textContent = '📊 Noch zu wenig Daten für eine Analyse. Logge 2-3 Sessions pro Übung damit der Coach Trends erkennen kann.';
+        } else {
+            const gains = topExercises.filter(([_, s]) => s[s.length-1].weight > s[0].weight);
+            if (el) el.textContent = gains.length > 0
+                ? `💪 Du machst Fortschritte bei ${gains.length} Übungen! ${gains.map(([n,s])=>`${n}: +${(s[s.length-1].weight-s[0].weight).toFixed(1)}kg`).join(', ')}. Weiter so — Konsistenz ist der Schlüssel zu 90kg.`
+                : `📋 Halte das Volumen und die Intensität konstant. Recovery und Ernährung sind jetzt entscheidend für weitere Fortschritte.`;
+        }
+    }
+}
+
+function checkWorkoutComplete() {
+    const today = new Date().toISOString().split('T')[0];
+    const allCards = document.querySelectorAll('#workoutDisplay .ex-card');
+    const doneCards = document.querySelectorAll('#workoutDisplay .ex-card.done');
+    if (allCards.length > 0 && allCards.length === doneCards.length) {
+        setTimeout(() => {
+            const msgs = [
+                '🏆 Training abgeschlossen! Du bist ein Tier!',
+                '💥 Beast Mode aktiviert — heute hast du alles gegeben!',
+                '🔥 Volles Training durchgezogen! Recovery wichtig heute.',
+                '💪 Krasse Session! Dein zukünftiges Ich dankt dir!',
+                '⚡ Training complete! Protein nicht vergessen!',
+            ];
+            showToast(msgs[Math.floor(Math.random()*msgs.length)], 'success');
+            // Training einklappen
+            const display = document.getElementById('workoutDisplay');
+            if (display) {
+                const summary = document.createElement('div');
+                summary.className = 'card';
+                summary.style.cssText = 'text-align:center;padding:20px;';
+                const completed = document.querySelectorAll('#workoutDisplay .ex-card.done').length;
+                summary.innerHTML = `<div style="font-size:40px;margin-bottom:10px;">🏆</div>
+                    <div style="font-weight:800;font-size:18px;margin-bottom:6px;">Training abgeschlossen!</div>
+                    <div style="color:var(--text2);font-size:13px;">${completed} Übungen · ${new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})} Uhr</div>
+                    <button onclick="reopenWorkout()" style="margin-top:14px;background:none;border:1px solid var(--border);color:var(--text2);padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;">Training anzeigen</button>`;
+                display.innerHTML = '';
+                display.appendChild(summary);
+            }
+        }, 1500);
+    }
+}
+
+function reopenWorkout() {
+    generateWorkout();
 }
 
 function closeSetTrackerModal() {
     const m = document.getElementById('setTrackerModal');
     if (m) m.classList.remove('show');
+    stopRestTimer();
+    const timerEl = document.getElementById('restTimer');
+    if (timerEl) timerEl.classList.remove('active');
     stCurrentExId = null; stCurrentExName = null; stCurrentEx = null;
 }
 
@@ -3183,21 +3704,24 @@ function openSwapModal(exId, exName, group) {
         currentSwapExId = exId;
         currentSwapGroup = group;
 
+        const groupLabels = { back:'🔙 Rücken', legs:'🦵 Beine', shoulders:'🏔️ Schultern', arms:'💪 Arme', stretching:'🧘 Stretching' };
         const subEl = document.getElementById('swapModalSub');
-        if (subEl) subEl.textContent = `Ersatz für: ${exName}`;
+        if (subEl) subEl.textContent = `Ersatz für: ${exName} (${groupLabels[group] || group})`;
 
         const listEl = document.getElementById('swapList');
         if (!listEl) return;
 
+        // Nur Übungen aus derselben Muskelgruppe zeigen
         const exercises = rpExercises[group] || [];
         listEl.innerHTML = exercises.map((ex, i) => {
-            const isCurrent = exId === `ex_${group}_${i}`;
-            return `<div class="swap-item ${isCurrent ? 'style="opacity:0.4;pointer-events:none;"' : ''}">
+            const isCurrent = exName === ex.name;
+            return `<div class="swap-item" style="${isCurrent?'opacity:0.4;pointer-events:none;':''}">
               <div class="swap-item-info">
-                <div class="swap-item-name">${ex.name}${ex.myorep ? '<span class="myorep-badge">MYO</span>' : ''}</div>
-                <div class="swap-item-focus">${ex.focus || ''}</div>
+                <div class="swap-item-name">${ex.name}${ex.myorep ? '<span class="myorep-badge" style="margin-left:6px;">MYO</span>' : ''}</div>
+                <div class="swap-item-focus" style="color:var(--text2);font-size:12px;margin-top:2px;">${ex.focus || ''}</div>
+                ${ex.tip ? `<div style="font-size:11px;color:var(--text2);margin-top:3px;opacity:0.7;">💡 ${ex.tip.substring(0,60)}…</div>` : ''}
               </div>
-              ${!isCurrent ? `<button class="swap-select-btn" onclick="swapExercise('${exId}', ${i}, '${group}')">Wählen</button>` : '<span style="font-size:11px;color:var(--text2);">Aktuell</span>'}
+              ${!isCurrent ? `<button class="swap-select-btn" onclick="swapExercise('${exId}', ${i}, '${group}')">Wählen</button>` : '<span style="font-size:11px;color:var(--accent);font-weight:700;">Aktuell</span>'}
             </div>`;
         }).join('');
 
@@ -3261,6 +3785,9 @@ function adjustActivityDuration(delta) {
     const el = document.getElementById('activityDurationDisplay');
     if (el) el.textContent = activityDuration + ' min';
     updateActivityPreview();
+    // Sync beim Bestätigen der Dauer
+    const activity = getSelectedActivity();
+    if (activity) syncActivityToTracking(activity, activityDuration);
 }
 
 function onActivityChange() {
@@ -3296,10 +3823,16 @@ function onActivityChange() {
         updateActivityPreview();
         generateWorkout();
 
-        // Sync to tracking
-        syncActivityToTracking(activity, activityDuration);
+        // Sync erst beim Verlassen des Screens — nicht sofort beim Antippen
+        // (wird von adjustActivityDuration aufgerufen wenn Dauer bestätigt)
     } else {
         if (durationRow) durationRow.style.display = 'none';
+        // Aktivität aus Tracking entfernen wenn "Keine" gewählt
+        const today = new Date().toISOString().split('T')[0];
+        if (appData.activities?.[today]?.sport) {
+            appData.activities[today].sport = '';
+            localStorage.setItem('activities', JSON.stringify(appData.activities));
+        }
         generateWorkout();
     }
 }
@@ -4859,10 +5392,11 @@ function clearAllData() {
         updateHomeWeekly();
         updateWeightHistory();
         generateCalisthenics();
-        generateWorkout();
         updateRecovery();
         updateRunStats();
         renderRunHistory();
+        loadSettings();
+        // Training wird erst generiert wenn Tab geöffnet wird (initTrainingScreen)
     } catch(e) {
         console.error('Init error:', e);
     }
