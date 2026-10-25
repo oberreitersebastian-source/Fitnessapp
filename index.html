@@ -1728,30 +1728,6 @@ html, body {
     </div>
 
     <div class="card">
-      <div class="setting-row">
-        <div class="setting-icon">🎯</div>
-        <div class="setting-info">
-          <div class="setting-label">Zielgewicht</div>
-          <div class="setting-sub">Aktuell: 82kg → 90kg</div>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-icon">🎂</div>
-        <div class="setting-info">
-          <div class="setting-label">Alter</div>
-          <div class="setting-sub">31 Jahre → Zone 2: 139–149 bpm</div>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-icon">🔥</div>
-        <div class="setting-info">
-          <div class="setting-label">Basis-Kalorien</div>
-          <div class="setting-sub">2500 kcal / Tag (Bulk Phase)</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
       <div class="card-title">Daten</div>
       <button class="btn-danger" onclick="clearAllData()" style="width:100%;">🗑️ Alle Daten löschen</button>
     </div>
@@ -1804,6 +1780,98 @@ html, body {
 // ═══════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════
+const MESO_PLANS = [
+    {
+        id: 'legs_focus',
+        name: 'Beine — Gluteus & Quads & Waden',
+        emoji: '🦵',
+        description: '3 Tage/Woche Fokus auf Sprinterpo, Quads und Waden-Aufbau',
+        daysPerWeek: 3,
+        mesoWeeks: 4,
+        color: 'var(--success)',
+        sessions: [
+            {
+                name: 'Tag A — Quad & Glutes',
+                groups: ['legs'],
+                exercises: ['Barbell Back Squat (Deep)', 'Sissy Squat', 'Bulgarian Split Squat', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
+                sets_mev: [3,2,2,3,2], sets_mrv: [5,4,4,5,4]
+            },
+            {
+                name: 'Tag B — Hamstring & Glutes',
+                groups: ['legs'],
+                exercises: ['Romanian Deadlift', 'Nordic Hamstring Curl (Band Assisted)', 'Cable Pull-Through', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
+                sets_mev: [3,3,2,3,2], sets_mrv: [5,5,3,5,4]
+            },
+            {
+                name: 'Tag C — Quad & Waden Fokus',
+                groups: ['legs'],
+                exercises: ['Bulgarian Split Squat', 'Sissy Squat', 'Cable Pull-Through', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
+                sets_mev: [3,2,2,4,3], sets_mrv: [5,4,3,6,5]
+            }
+        ]
+    },
+    {
+        id: 'back_shoulders',
+        name: 'Rücken & Schultern',
+        emoji: '🔙',
+        description: '3 Tage/Woche V-Shape Aufbau + seitliche Delts Volumen',
+        daysPerWeek: 3,
+        mesoWeeks: 4,
+        color: 'var(--accent)',
+        sessions: [
+            {
+                name: 'Tag A — Rücken Breite',
+                groups: ['back', 'shoulders'],
+                exercises: ['Weighted Pull-ups', 'Cable Straight-Arm Pulldown', 'Cable Lateral Raise (Low)', 'Incline Dumbbell Lateral Raise', 'Cable Face Pull (Rope)'],
+                sets_mev: [3,3,4,3,2], sets_mrv: [5,4,6,5,3]
+            },
+            {
+                name: 'Tag B — Rücken Dicke + Schultern',
+                groups: ['back', 'shoulders'],
+                exercises: ['Seated Cable Row (Beinablage)', 'Single-Arm Dumbbell Row', 'Seated Dumbbell Overhead Press', 'Cable Lateral Raise (Low)', 'Kabel Hinterer Deltoid Fly (Cross-Body)'],
+                sets_mev: [3,3,3,4,3], sets_mrv: [5,4,5,6,4]
+            },
+            {
+                name: 'Tag C — Spinal Erectors + Schultern',
+                groups: ['back', 'shoulders'],
+                exercises: ['Good Morning (Barbell)', 'Cable Pull-Through', 'Barbell Upright Row', 'Incline Dumbbell Lateral Raise', 'Cable Front Raise (Behind Body)'],
+                sets_mev: [3,3,3,3,2], sets_mrv: [4,4,4,5,3]
+            }
+        ]
+    },
+    {
+        id: 'chest_arms',
+        name: 'Brust & Arme',
+        emoji: '🫁',
+        description: '3 Tage/Woche Brust, Bizeps, Trizeps und Unterarme',
+        daysPerWeek: 3,
+        mesoWeeks: 4,
+        color: 'var(--blue)',
+        sessions: [
+            {
+                name: 'Tag A — Brust + Trizeps',
+                groups: ['chest', 'arms'],
+                exercises: ['Dumbbell Flyes (Flachbank)', 'Incline Dumbbell Press', 'Overhead Cable Triceps Extension', 'Cable Triceps Pushdown (Rope)'],
+                sets_mev: [3,3,3,2], sets_mrv: [5,5,5,4]
+            },
+            {
+                name: 'Tag B — Bizeps + Unterarme',
+                groups: ['arms'],
+                exercises: ['Incline Dumbbell Curl', 'Barbell Curl', 'Hammer Curl', 'Reverse Barbell Curl', 'Barbell Wrist Curl'],
+                sets_mev: [3,3,2,2,2], sets_mrv: [5,4,4,3,3]
+            },
+            {
+                name: 'Tag C — Brust + Arme',
+                groups: ['chest', 'arms'],
+                exercises: ['Cable Crossover (Low to High)', 'Cable Fly (mittlere Höhe)', 'Incline Dumbbell Curl', 'Overhead Cable Triceps Extension'],
+                sets_mev: [3,3,3,3], sets_mrv: [5,5,5,5]
+            }
+        ]
+    }
+];
+
+
+
 let appData = {
     workouts: JSON.parse(localStorage.getItem('workouts')) || [],
     completedExercises: JSON.parse(localStorage.getItem('completedExercises')) || {},
@@ -1828,8 +1896,6 @@ let currentModalExId = null;
 let currentModalExName = null;
 
 
-const ZONE2_MAX = 180 - USER_AGE;
-const ZONE2_MIN = ZONE2_MAX - 10;
 
 // ═══════════════════════════════════════════
 // NAVIGATION
@@ -1860,9 +1926,8 @@ function initTrainingScreen() {
         // Alle Pills zurücksetzen
         const allGroups = ['back','legs','chest','shoulders','arms','stretching'];
         allGroups.forEach(g => {
-            const key = g === 'stretch' ? 'Stretching' : g.charAt(0).toUpperCase() + g.slice(1);
-            const cb = document.getElementById('focus' + key);
-            const pill = document.getElementById('fpill-' + (g === 'stretching' ? 'stretch' : g));
+            const cb = document.getElementById('focus' + g.charAt(0).toUpperCase() + g.slice(1));
+            const pill = document.getElementById(g === 'stretching' ? 'fpill-stretch' : 'fpill-' + g);
             if (cb) cb.checked = false;
             if (pill) pill.classList.remove('checked');
         });
@@ -1932,10 +1997,12 @@ function loadPlanSession(sessionIdx) {
     // Pills setzen basierend auf Session-Gruppen
     const allGroups = ['back','legs','chest','shoulders','arms','stretching'];
     allGroups.forEach(g => {
-        const cb = document.getElementById('focus' + g.charAt(0).toUpperCase() + g.slice(1));
-        const pill = document.getElementById('fpill-' + (g === 'stretching' ? 'stretch' : g));
+        const capKey = g.charAt(0).toUpperCase() + g.slice(1);
+        const cb = document.getElementById('focus' + capKey);
+        const pillId = g === 'stretching' ? 'fpill-stretch' : 'fpill-' + g;
+        const pill = document.getElementById(pillId);
         const shouldCheck = session.groups.includes(g);
-        if (cb) cb.checked = shouldCheck;
+        if (cb) { cb.checked = shouldCheck; }
         if (pill) pill.classList.toggle('checked', shouldCheck);
     });
 
@@ -2510,6 +2577,18 @@ function generateWorkout() {
         localStorage.setItem('workouts', JSON.stringify(appData.workouts));
 
     } catch(e) { console.error('generateWorkout:', e); }
+}
+
+function makeSection(sectionId, title, cardsHtml, collapsed) {
+    return `<div class="workout-section" id="section-${sectionId}">
+        <div class="section-header" onclick="toggleSection('${sectionId}')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+            <span>${title}</span>
+            <span id="section-icon-${sectionId}" style="font-size:14px;color:var(--text2);transition:transform 0.2s;">${collapsed?'▶':'▼'}</span>
+        </div>
+        <div id="section-body-${sectionId}" style="display:${collapsed?'none':'block'};">
+            ${cardsHtml}
+        </div>
+    </div>`;
 }
 
 function toggleSection(sectionId) {
@@ -3112,7 +3191,7 @@ Gib konkretes Coaching-Feedback (Deutsch, max 200 Wörter):
         } else {
             const gains = topExercises.filter(([_, s]) => s[s.length-1].weight > s[0].weight);
             if (el) el.textContent = gains.length > 0
-                ? `💪 Du machst Fortschritte bei ${gains.length} Übungen! ${gains.map(([n,s])=>`${n}: +${(s[s.length-1].weight-s[0].weight).toFixed(1)}kg`).join(', ')}. Weiter so — Konsistenz ist der Schlüssel zu 90kg.`
+                ? `💪 Du machst Fortschritte bei ${gains.length} Übungen! ${gains.map(([n,s])=>`${n}: +${(s[s.length-1].weight-s[0].weight).toFixed(1)}kg`).join(', ')}. Weiter so — Konsistenz ist der Schlüssel!`
                 : `📋 Halte das Volumen und die Intensität konstant. Recovery und Ernährung sind jetzt entscheidend für weitere Fortschritte.`;
         }
     }
@@ -3842,7 +3921,7 @@ function buildAthleteContext() {
 
         return `
 ATHLETEN-PROFIL:
-- Alter: 31 Jahre, Ziel: Muskelaufbau (Fokus Rücken, Schultern, Beine, Brust, Arme)
+- Ziel: Muskelaufbau (Fokus Rücken, Schultern, Beine, Brust, Arme)
 - Equipment: Power Rack, Kabelzug (High/Low/Mitte), Langhantel, Kurzhanteln bis 50kg, Bank
 
 AKTIVER MESOZYKLUS:
@@ -4419,96 +4498,6 @@ function renderSavedRecipes() {
 // ═══════════════════════════════════════════
 // MESOZYKLUS PLÄNE
 // ═══════════════════════════════════════════
-
-const MESO_PLANS = [
-    {
-        id: 'legs_focus',
-        name: 'Beine — Gluteus & Quads & Waden',
-        emoji: '🦵',
-        description: '3 Tage/Woche Fokus auf Sprinterpo, Quads und Waden-Aufbau',
-        daysPerWeek: 3,
-        mesoWeeks: 4,
-        color: 'var(--success)',
-        sessions: [
-            {
-                name: 'Tag A — Quad & Glutes',
-                groups: ['legs'],
-                exercises: ['Barbell Back Squat (Deep)', 'Sissy Squat', 'Bulgarian Split Squat', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
-                sets_mev: [3,2,2,3,2], sets_mrv: [5,4,4,5,4]
-            },
-            {
-                name: 'Tag B — Hamstring & Glutes',
-                groups: ['legs'],
-                exercises: ['Romanian Deadlift', 'Nordic Hamstring Curl (Band Assisted)', 'Cable Pull-Through', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
-                sets_mev: [3,3,2,3,2], sets_mrv: [5,5,3,5,4]
-            },
-            {
-                name: 'Tag C — Quad & Waden Fokus',
-                groups: ['legs'],
-                exercises: ['Bulgarian Split Squat', 'Sissy Squat', 'Cable Pull-Through', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
-                sets_mev: [3,2,2,4,3], sets_mrv: [5,4,3,6,5]
-            }
-        ]
-    },
-    {
-        id: 'back_shoulders',
-        name: 'Rücken & Schultern',
-        emoji: '🔙',
-        description: '3 Tage/Woche V-Shape Aufbau + seitliche Delts Volumen',
-        daysPerWeek: 3,
-        mesoWeeks: 4,
-        color: 'var(--accent)',
-        sessions: [
-            {
-                name: 'Tag A — Rücken Breite',
-                groups: ['back', 'shoulders'],
-                exercises: ['Weighted Pull-ups', 'Cable Straight-Arm Pulldown', 'Cable Lateral Raise (Low)', 'Incline Dumbbell Lateral Raise', 'Cable Face Pull (Rope)'],
-                sets_mev: [3,3,4,3,2], sets_mrv: [5,4,6,5,3]
-            },
-            {
-                name: 'Tag B — Rücken Dicke + Schultern',
-                groups: ['back', 'shoulders'],
-                exercises: ['Seated Cable Row (Beinablage)', 'Single-Arm Dumbbell Row', 'Seated Dumbbell Overhead Press', 'Cable Lateral Raise (Low)', 'Kabel Hinterer Deltoid Fly (Cross-Body)'],
-                sets_mev: [3,3,3,4,3], sets_mrv: [5,4,5,6,4]
-            },
-            {
-                name: 'Tag C — Spinal Erectors + Schultern',
-                groups: ['back', 'shoulders'],
-                exercises: ['Good Morning (Barbell)', 'Cable Pull-Through', 'Barbell Upright Row', 'Incline Dumbbell Lateral Raise', 'Cable Front Raise (Behind Body)'],
-                sets_mev: [3,3,3,3,2], sets_mrv: [4,4,4,5,3]
-            }
-        ]
-    },
-    {
-        id: 'chest_arms',
-        name: 'Brust & Arme',
-        emoji: '🫁',
-        description: '3 Tage/Woche Brust, Bizeps, Trizeps und Unterarme',
-        daysPerWeek: 3,
-        mesoWeeks: 4,
-        color: 'var(--blue)',
-        sessions: [
-            {
-                name: 'Tag A — Brust + Trizeps',
-                groups: ['chest', 'arms'],
-                exercises: ['Dumbbell Flyes (Flachbank)', 'Incline Dumbbell Press', 'Overhead Cable Triceps Extension', 'Cable Triceps Pushdown (Rope)'],
-                sets_mev: [3,3,3,2], sets_mrv: [5,5,5,4]
-            },
-            {
-                name: 'Tag B — Bizeps + Unterarme',
-                groups: ['arms'],
-                exercises: ['Incline Dumbbell Curl', 'Barbell Curl', 'Hammer Curl', 'Reverse Barbell Curl', 'Barbell Wrist Curl'],
-                sets_mev: [3,3,2,2,2], sets_mrv: [5,4,4,3,3]
-            },
-            {
-                name: 'Tag C — Brust + Arme',
-                groups: ['chest', 'arms'],
-                exercises: ['Cable Crossover (Low to High)', 'Cable Fly (mittlere Höhe)', 'Incline Dumbbell Curl', 'Overhead Cable Triceps Extension'],
-                sets_mev: [3,3,3,3], sets_mrv: [5,5,5,5]
-            }
-        ]
-    }
-];
 
 let currentPlanDetailId = null;
 let planDetailMesoWeeks = 4;
