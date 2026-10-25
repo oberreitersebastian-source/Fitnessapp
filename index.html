@@ -1239,21 +1239,60 @@ html, body {
       <div class="page-subtitle" id="homeGreeting">Guten Morgen!</div>
     </div>
 
-    <!-- Stats -->
-    <div class="stat-row">
-      <div class="stat-box">
-        <div class="stat-label">Gewicht</div>
-        <div class="stat-value" id="dashWeight">82<span class="stat-unit">kg</span></div>
-        <div class="prog-bar"><div class="prog-fill" id="dashWeightBar" style="width:0%"></div></div>
-        <div class="stat-sub">Ziel: 90kg</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Kalorien heute</div>
-        <div class="stat-value" id="dashCalories">2500<span class="stat-unit">kcal</span></div>
-        <div class="stat-sub" id="dashCaloriesSub">Basis ohne Training</div>
+    <!-- Aktiver Mesozyklus -->
+    <div id="homeMesoCard">
+      <div class="card" style="background:linear-gradient(135deg,rgba(255,107,53,0.12),rgba(255,215,0,0.06));border-color:rgba(255,107,53,0.25);cursor:pointer;" onclick="goTo('plans')">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div class="card-title" style="margin:0;">📋 Aktiver Mesozyklus</div>
+          <span style="font-size:12px;color:var(--text2);">Ändern →</span>
+        </div>
+        <div id="homeMesoContent">
+          <div style="color:var(--text2);font-size:13px;">Kein Plan aktiv — tippe hier um einen Plan auszuwählen.</div>
+        </div>
       </div>
     </div>
 
+    <!-- Makros -->
+    <div class="card" style="cursor:pointer;" onclick="goTo('nutrition')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div class="card-title" style="margin:0;">🍽️ Makros heute</div>
+        <span style="font-size:12px;color:var(--text2);">Details →</span>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+          <span style="font-size:13px;font-weight:700;">🔥 Kalorien</span>
+          <span style="font-size:13px;color:var(--text2);"><span id="homeMacroCal">0</span> / <span id="homeCalTarget">2500</span> kcal</span>
+        </div>
+        <div class="prog-bar" style="height:8px;"><div class="prog-fill" id="homeCalBar" style="width:0%;background:linear-gradient(90deg,var(--accent),var(--gold));"></div></div>
+        <div id="homeCalDelta" style="font-size:11px;color:var(--text2);margin-top:4px;"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div style="background:var(--surface2);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:16px;">💪</div>
+          <div style="font-weight:800;font-size:15px;color:var(--success);"><span id="homeProt">0</span>g</div>
+          <div style="font-size:10px;color:var(--text2);">/ <span id="homeProtTarget">140</span>g</div>
+          <div class="prog-bar" style="margin-top:5px;height:4px;"><div class="prog-fill" id="homeProtBar" style="width:0%;background:var(--success);"></div></div>
+        </div>
+        <div style="background:var(--surface2);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:16px;">🌾</div>
+          <div style="font-weight:800;font-size:15px;color:var(--warning);"><span id="homeCarb">0</span>g</div>
+          <div style="font-size:10px;color:var(--text2);">/ <span id="homeCarbTarget">250</span>g</div>
+          <div class="prog-bar" style="margin-top:5px;height:4px;"><div class="prog-fill" id="homeCarbBar" style="width:0%;background:var(--warning);"></div></div>
+        </div>
+        <div style="background:var(--surface2);border-radius:8px;padding:10px;text-align:center;">
+          <div style="font-size:16px;">🫙</div>
+          <div style="font-weight:800;font-size:15px;color:var(--blue);"><span id="homeFat">0</span>g</div>
+          <div style="font-size:10px;color:var(--text2);">/ <span id="homeFatTarget">70</span>g</div>
+          <div class="prog-bar" style="margin-top:5px;height:4px;"><div class="prog-fill" id="homeFatBar" style="width:0%;background:var(--blue);"></div></div>
+        </div>
+      </div>
+      <div id="homeSnackSuggestion" style="display:none;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:10px;padding:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:6px;">💡 Snack-Vorschlag</div>
+        <div id="homeSnackText" style="font-size:13px;color:var(--text);line-height:1.5;"></div>
+      </div>
+    </div>
+
+    <!-- Streak -->
     <div class="stat-row">
       <div class="stat-box">
         <div class="stat-label">Streak 🔥</div>
@@ -1261,130 +1300,9 @@ html, body {
         <div class="stat-sub" id="dashStreakSub">Starte heute!</div>
       </div>
       <div class="stat-box">
-        <div class="stat-label">Recovery heute</div>
-        <div class="stat-value" id="dashRecoveryScore">7<span class="stat-unit">/10</span></div>
-        <div class="stat-sub" id="dashRecoveryLabel">—</div>
-      </div>
-    </div>
-
-    <!-- Makro Fortschritt -->
-    <div class="card" style="cursor:pointer;" onclick="goTo('nutrition')">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-        <div class="card-title" style="margin:0;">🍽️ Makros heute</div>
-        <span style="font-size:12px;color:var(--text2);">Details →</span>
-      </div>
-
-      <!-- Kalorien Hauptbalken -->
-      <div style="margin-bottom:14px;">
-        <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-          <span style="font-size:13px;font-weight:700;">🔥 Kalorien</span>
-          <span style="font-size:13px;color:var(--text2);"><span id="homeMacroCal">0</span> / <span id="homeCalTarget">2500</span> kcal</span>
-        </div>
-        <div class="prog-bar" style="height:8px;">
-          <div class="prog-fill" id="homeCalBar" style="width:0%;background:linear-gradient(90deg,var(--accent),var(--gold));"></div>
-        </div>
-        <div id="homeCalDelta" style="font-size:11px;color:var(--text2);margin-top:4px;"></div>
-      </div>
-
-      <!-- Makros Grid -->
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
-        <div style="background:var(--surface2);border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:18px;">💪</div>
-          <div style="font-weight:800;font-size:15px;color:var(--success);"><span id="homeProt">0</span>g</div>
-          <div style="font-size:10px;color:var(--text2);">/ <span id="homeProtTarget">140</span>g</div>
-          <div class="prog-bar" style="margin-top:5px;height:4px;"><div class="prog-fill" id="homeProtBar" style="width:0%;background:var(--success);"></div></div>
-        </div>
-        <div style="background:var(--surface2);border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:18px;">🌾</div>
-          <div style="font-weight:800;font-size:15px;color:var(--warning);"><span id="homeCarb">0</span>g</div>
-          <div style="font-size:10px;color:var(--text2);">/ <span id="homeCarbTarget">250</span>g</div>
-          <div class="prog-bar" style="margin-top:5px;height:4px;"><div class="prog-fill" id="homeCarbBar" style="width:0%;background:var(--warning);"></div></div>
-        </div>
-        <div style="background:var(--surface2);border-radius:8px;padding:10px;text-align:center;">
-          <div style="font-size:18px;">🫙</div>
-          <div style="font-weight:800;font-size:15px;color:var(--blue);"><span id="homeFat">0</span>g</div>
-          <div style="font-size:10px;color:var(--text2);">/ <span id="homeFatTarget">70</span>g</div>
-          <div class="prog-bar" style="margin-top:5px;height:4px;"><div class="prog-fill" id="homeFatBar" style="width:0%;background:var(--blue);"></div></div>
-        </div>
-      </div>
-
-      <!-- Snack Vorschlag -->
-      <div id="homeSnackSuggestion" style="display:none;background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.2);border-radius:10px;padding:12px;">
-        <div style="font-size:12px;font-weight:700;color:var(--success);margin-bottom:6px;">💡 Snack-Vorschlag um Ziel zu erreichen</div>
-        <div id="homeSnackText" style="font-size:13px;color:var(--text);line-height:1.5;"></div>
-      </div>
-    </div>
-
-    <!-- Today's Activity -->
-    <div class="card">
-      <div class="card-title">Heute absolviert</div>
-      <div id="dashActivity"></div>
-    </div>
-
-    <!-- Recovery Summary (readonly — Eingabe im Tracking) -->
-    <div class="card" style="cursor:pointer;" onclick="goTo('tracking')">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="card-title" style="margin:0;">Heutiges Befinden</div>
-        <span style="font-size:12px;color:var(--text2);">Im Tracking ändern →</span>
-      </div>
-      <div id="homeCheckinSummary">
-        <div style="color:var(--text2);font-size:13px;">Noch kein Check-In heute — tippe hier zum Eintragen.</div>
-      </div>
-    </div>
-
-    <!-- Wochenansicht einklappbar -->
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleWeeklyCollapse()">
-        <div class="card-title" style="margin:0;">📅 Diese Woche</div>
-        <span id="weeklyCollapseIcon" style="font-size:18px;color:var(--text2);transition:transform 0.2s;">▼</span>
-      </div>
-      <div id="weeklyCollapsed" style="display:none;margin-top:14px;">
-        <div id="homeWeekGoals"></div>
-        <div id="homeWeekDays" style="margin-top:12px;"></div>
-
-        <!-- Ziele anpassen -->
-        <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
-          <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">Wochenziele anpassen</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div>
-              <label class="field-label" style="font-size:11px;">🏋️ Krafttraining</label>
-              <div class="num-stepper">
-                <button class="ns-btn" onclick="adjustGoal('strength',-1)">−</button>
-                <div class="ns-val" id="goalStrength">4</div>
-                <button class="ns-btn" onclick="adjustGoal('strength',1)">+</button>
-              </div>
-            </div>
-            <div>
-              <label class="field-label" style="font-size:11px;">🏃 Läufe</label>
-              <div class="num-stepper">
-                <button class="ns-btn" onclick="adjustGoal('runs',-1)">−</button>
-                <div class="ns-val" id="goalRuns">3</div>
-                <button class="ns-btn" onclick="adjustGoal('runs',1)">+</button>
-              </div>
-            </div>
-            <div>
-              <label class="field-label" style="font-size:11px;">🧘 Stretching</label>
-              <div class="num-stepper">
-                <button class="ns-btn" onclick="adjustGoal('stretching',-1)">−</button>
-                <div class="ns-val" id="goalStretching">5</div>
-                <button class="ns-btn" onclick="adjustGoal('stretching',1)">+</button>
-              </div>
-            </div>
-            <div>
-              <label class="field-label" style="font-size:11px;">💚 Zone 2 Läufe</label>
-              <div class="num-stepper">
-                <button class="ns-btn" onclick="adjustGoal('zone2',-1)">−</button>
-                <div class="ns-val" id="goalZone2">2</div>
-                <button class="ns-btn" onclick="adjustGoal('zone2',1)">+</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button class="btn-success" onclick="generateHomeRecap()" id="homeRecapBtn" style="margin-top:12px;font-size:13px;padding:10px;">✨ Wochenrückblick</button>
-        <div class="recap-box" id="homeRecapBox" style="display:none;margin-top:10px;">
-          <div class="recap-ai" id="homeRecapContent"></div>
-        </div>
+        <div class="stat-label">Kalorien heute</div>
+        <div class="stat-value" id="dashCalories">2500<span class="stat-unit">kcal</span></div>
+        <div class="stat-sub" id="dashCaloriesSub">Basis</div>
       </div>
     </div>
   </div>
@@ -1401,273 +1319,53 @@ html, body {
       </div>
     </div>
 
+    <!-- Aktiver Plan Info -->
+    <div id="trainingPlanBanner" style="display:none;" class="card" style="background:rgba(255,107,53,0.08);border-color:rgba(255,107,53,0.25);margin-bottom:12px;">
+      <div id="trainingPlanBannerContent"></div>
+    </div>
+
     <div class="card">
-      <div class="card-title">Fokus heute</div>
+      <div class="card-title">Muskelgruppe heute</div>
       <div class="focus-pills">
-        <label class="focus-pill" id="fpill-back"><input type="checkbox" id="focusBack" checked onchange="generateWorkout()">🔙 Rücken</label>
-        <label class="focus-pill" id="fpill-legs"><input type="checkbox" id="focusLegs" checked onchange="generateWorkout()">🦵 Beine</label>
+        <label class="focus-pill" id="fpill-back"><input type="checkbox" id="focusBack" onchange="generateWorkout()">🔙 Rücken</label>
+        <label class="focus-pill" id="fpill-legs"><input type="checkbox" id="focusLegs" onchange="generateWorkout()">🦵 Beine</label>
+        <label class="focus-pill" id="fpill-chest"><input type="checkbox" id="focusChest" onchange="generateWorkout()">🫁 Brust</label>
         <label class="focus-pill" id="fpill-shoulders"><input type="checkbox" id="focusShoulders" onchange="generateWorkout()">🏔️ Schultern</label>
         <label class="focus-pill" id="fpill-arms"><input type="checkbox" id="focusArms" onchange="generateWorkout()">💪 Arme</label>
         <label class="focus-pill" id="fpill-stretch"><input type="checkbox" id="focusStretching" onchange="generateWorkout()">🧘 Stretching</label>
       </div>
 
-      <div class="card-title">Weitere Aktivität heute?</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
-        <label class="focus-pill" id="apill-none"><input type="radio" name="activity" id="actNone" value="" checked onchange="onActivityChange()">✖️ Keine</label>
-        <label class="focus-pill" id="apill-swim"><input type="radio" name="activity" id="actSwim" value="Schwimmen" onchange="onActivityChange()">🏊 Schwimmen</label>
-        <label class="focus-pill" id="apill-padel"><input type="radio" name="activity" id="actPadel" value="Padel" onchange="onActivityChange()">🎾 Padel</label>
-        <label class="focus-pill" id="apill-tennis"><input type="radio" name="activity" id="actTennis" value="Tennis" onchange="onActivityChange()">🎾 Tennis</label>
-        <label class="focus-pill" id="apill-walk"><input type="radio" name="activity" id="actWalk" value="Spaziergang" onchange="onActivityChange()">🚶 Spaziergang</label>
-        <label class="focus-pill" id="apill-bike"><input type="radio" name="activity" id="actBike" value="Radfahren" onchange="onActivityChange()">🚴 Radfahren</label>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn-primary" onclick="shuffleWorkout()" style="flex:1;">🎲 Neu würfeln</button>
+        <button onclick="openAddExerciseModal()" style="background:rgba(255,215,0,0.12);border:1.5px solid rgba(255,215,0,0.4);color:var(--gold);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;">➕</button>
+        <button onclick="openTrainingCoach()" style="background:rgba(46,204,113,0.12);border:1.5px solid rgba(46,204,113,0.3);color:var(--success);border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;">🤖</button>
       </div>
-
-      <!-- Dauer (nur sichtbar wenn Aktivität gewählt) -->
-      <div id="activityDurationRow" style="display:none;margin-bottom:14px;">
-        <div class="card-title">Dauer</div>
-        <div class="time-stepper">
-          <div class="stepper-label" id="activityDurationLabel">🏊 Minuten</div>
-          <button class="stepper-btn" onclick="adjustActivityDuration(-5)">−</button>
-          <div class="stepper-value" id="activityDurationDisplay">60 min</div>
-          <button class="stepper-btn" onclick="adjustActivityDuration(5)">+</button>
-        </div>
-        <div id="activityCaloriePreview" style="font-size:12px;color:var(--success);margin-top:8px;padding:8px 12px;background:rgba(46,204,113,0.08);border-radius:8px;"></div>
-      </div>
-
-      <div class="card-title">Verfügbare Zeit</div>
-      <div class="time-stepper">
-        <div class="stepper-label">⏱️ Minuten</div>
-        <button class="stepper-btn" onclick="adjustTime(-5)">−</button>
-        <div class="stepper-value" id="timeDisplay">50 min</div>
-        <button class="stepper-btn" onclick="adjustTime(5)">+</button>
-      </div>
-
-      <button class="btn-primary" onclick="shuffleWorkout()">🎲 Neu würfeln</button>
-      <button class="btn-secondary" onclick="openTrainingCoach()" style="margin-top:8px;">🤖 Training Coach</button>
     </div>
 
     <div id="workoutDisplay"></div>
-
-    <!-- Training Coach Output -->
-    <div id="trainingCoachCard" style="display:none;" class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <div class="card-title" style="margin:0;">🤖 Training Coach</div>
-        <button onclick="document.getElementById('trainingCoachCard').style.display='none'" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;">✕</button>
-      </div>
-      <div id="trainingCoachContent"></div>
-    </div>
   </div>
 
-  <!-- ════════ RUNNING ════════ -->
-  <div id="screen-running" class="screen">
-    <div class="page-header">
-      <div class="page-title">🏃 Lauf Coach</div>
-      <div class="page-subtitle">Zone 2 Training</div>
-    </div>
-
-    <div class="zone2-banner">
-      <div class="zone2-icon">💚</div>
-      <div class="zone2-info">
-        <div class="zone2-label">Dein Zone 2 Ziel</div>
-        <div class="zone2-value" id="zone2Display">139–149 bpm</div>
-        <div class="zone2-sub">Maffetone: 180 − 31 Jahre</div>
-      </div>
-    </div>
-
-    <div class="stat-row">
-      <div class="stat-box">
-        <div class="stat-label">Letzte Ø HR</div>
-        <div class="stat-value" id="lastHrDisplay">–</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Läufe gesamt</div>
-        <div class="stat-value" id="totalRunsDisplay">0</div>
-      </div>
-    </div>
-
-    <!-- Pre-Run -->
-    <div class="card">
-      <div class="card-title">Pre-Run Briefing</div>
-
-      <div class="field-group">
-        <label class="field-label">Wie fühlst du dich?</label>
-        <select class="field-select" id="preRunFeeling">
-          <option value="great">🟢 Super – volle Energie</option>
-          <option value="good" selected>🟡 Gut – normal</option>
-          <option value="tired">🟠 Müde – etwas erschöpft</option>
-          <option value="bad">🔴 Schwere Beine</option>
-        </select>
+  <!-- ════════ ADD EXERCISE MODAL ════════ -->
+  <div class="modal-overlay" id="addExerciseModal">
+    <div class="modal-sheet" style="max-height:88vh;overflow-y:auto;padding-bottom:40px;">
+      <div class="modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div class="modal-title">➕ Übung hinzufügen</div>
+        <button onclick="closeAddExerciseModal()" style="background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;">✕</button>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">Geplante Zeit</label>
-        <div class="time-stepper">
-          <div class="stepper-label">⏱️ Minuten</div>
-          <button class="stepper-btn" onclick="adjustRunTime(-5)">−</button>
-          <div class="stepper-value" id="runTimeDisplay">30 min</div>
-          <button class="stepper-btn" onclick="adjustRunTime(5)">+</button>
-        </div>
+      <!-- Filter Gruppe -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="addExGroupFilter">
+        <button onclick="filterAddEx('all')" id="addExFilter-all" class="focus-pill checked" style="font-size:12px;">Alle</button>
+        <button onclick="filterAddEx('back')" id="addExFilter-back" class="focus-pill" style="font-size:12px;">🔙 Rücken</button>
+        <button onclick="filterAddEx('legs')" id="addExFilter-legs" class="focus-pill" style="font-size:12px;">🦵 Beine</button>
+        <button onclick="filterAddEx('chest')" id="addExFilter-chest" class="focus-pill" style="font-size:12px;">🫁 Brust</button>
+        <button onclick="filterAddEx('shoulders')" id="addExFilter-shoulders" class="focus-pill" style="font-size:12px;">🏔️ Schultern</button>
+        <button onclick="filterAddEx('arms')" id="addExFilter-arms" class="focus-pill" style="font-size:12px;">💪 Arme</button>
+        <button onclick="filterAddEx('stretching')" id="addExFilter-stretching" class="focus-pill" style="font-size:12px;">🧘 Stretching</button>
       </div>
 
-      <div class="field-group">
-        <label class="field-label">Notizen (optional)</label>
-        <textarea class="field-textarea" id="preRunNotes" rows="2" placeholder="z.B. Beine müde vom gestrigen Training…"></textarea>
-      </div>
-
-      <button class="btn-primary" onclick="getPreRunBriefing()" id="preRunBtn">🏃 Briefing starten</button>
-
-      <div class="ai-output" id="preRunResult"></div>
-      <button class="btn-success" id="runStartedBtn" style="display:none;" onclick="markRunStarted()">🏁 Lauf gestartet!</button>
-    </div>
-
-    <!-- Log Run -->
-    <div class="card">
-      <div class="card-title">Lauf erfassen</div>
-
-      <div class="field-group">
-        <label class="field-label">Datum</label>
-        <input type="date" class="field-input" id="runDate">
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-        <div>
-          <label class="field-label">Distanz (km)</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="stepField('runDistance',-0.5)">−</button>
-            <input class="ns-val field-input" type="number" id="runDistance" value="0" step="0.5" style="border:none;background:none;width:60px;text-align:center;font-size:17px;font-weight:700;">
-            <button class="ns-btn" onclick="stepField('runDistance',0.5)">+</button>
-          </div>
-        </div>
-        <div>
-          <label class="field-label">Dauer (min)</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="stepField('runDuration',-5)">−</button>
-            <input class="ns-val field-input" type="number" id="runDuration" value="30" step="5" style="border:none;background:none;width:60px;text-align:center;font-size:17px;font-weight:700;">
-            <button class="ns-btn" onclick="stepField('runDuration',5)">+</button>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-        <div>
-          <label class="field-label">Ø HR (bpm)</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="stepField('runAvgHr',-1)">−</button>
-            <input class="ns-val field-input" type="number" id="runAvgHr" value="0" style="border:none;background:none;width:60px;text-align:center;font-size:17px;font-weight:700;">
-            <button class="ns-btn" onclick="stepField('runAvgHr',1)">+</button>
-          </div>
-        </div>
-        <div>
-          <label class="field-label">Max HR (bpm)</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="stepField('runMaxHr',-1)">−</button>
-            <input class="ns-val field-input" type="number" id="runMaxHr" value="0" style="border:none;background:none;width:60px;text-align:center;font-size:17px;font-weight:700;">
-            <button class="ns-btn" onclick="stepField('runMaxHr',1)">+</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="field-group">
-        <label class="field-label">Tempo (min/km)</label>
-        <input type="text" class="field-input" id="runPace" placeholder="z.B. 6:30">
-      </div>
-      <div class="field-group">
-        <label class="field-label">% Zeit Zone 2</label>
-        <div class="num-stepper">
-          <button class="ns-btn" onclick="stepField('runZone2Pct',-5)">−</button>
-          <input class="ns-val field-input" type="number" id="runZone2Pct" value="0" style="border:none;background:none;width:60px;text-align:center;font-size:17px;font-weight:700;">
-          <button class="ns-btn" onclick="stepField('runZone2Pct',5)">+</button>
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Notizen</label>
-        <textarea class="field-textarea" id="runNotes" rows="2" placeholder="Wie war es?"></textarea>
-      </div>
-
-      <div class="btn-row">
-        <button class="btn-secondary" onclick="saveRun()">💾 Speichern</button>
-        <button class="btn-success" onclick="saveRun(true)" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--success),#27ae60);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;">✅ Abschließen</button>
-      </div>
-    </div>
-
-    <!-- Post-Run Analyse -->
-    <div class="card">
-      <div class="card-title">Post-Run Analyse</div>
-      <button class="btn-secondary" onclick="getPostRunAnalysis()" id="postRunBtn">🔍 Lauf analysieren</button>
-      <div class="ai-output" id="postRunResult"></div>
-    </div>
-
-    <!-- Run History -->
-    <div class="card">
-      <div class="card-title">Lauf-Verlauf</div>
-      <div id="runHistoryDisplay"></div>
-    </div>
-  </div>
-
-  <!-- ════════ WEEKLY ════════ -->
-  <div id="screen-weekly" class="screen">
-    <div class="page-header">
-      <div class="page-title">📅 Diese Woche</div>
-      <div class="page-subtitle" id="weekDateRange">Woche wird geladen…</div>
-    </div>
-
-    <!-- Ziele -->
-    <div class="card">
-      <div class="card-title">Wochenziele</div>
-      <div id="weekGoalsDisplay"></div>
-    </div>
-
-    <!-- Tagesübersicht -->
-    <div class="card">
-      <div class="card-title">Tage diese Woche</div>
-      <div id="weekDaysDisplay"></div>
-    </div>
-
-    <!-- AI Recap -->
-    <div class="card">
-      <div class="card-title">🤖 Wochenrückblick</div>
-      <button class="btn-secondary" onclick="generateWeeklyRecap()" id="recapBtn" style="margin-bottom:12px;">✨ Recap generieren</button>
-      <div class="recap-box" id="recapBox" style="display:none;">
-        <div class="recap-ai" id="recapContent"></div>
-      </div>
-    </div>
-
-    <!-- Wochenziele anpassen -->
-    <div class="card">
-      <div class="card-title">Ziele anpassen</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <label class="field-label">Krafttraining / Woche</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="adjustGoal('strength',-1)">−</button>
-            <div class="ns-val" id="goalStrength">4</div>
-            <button class="ns-btn" onclick="adjustGoal('strength',1)">+</button>
-          </div>
-        </div>
-        <div>
-          <label class="field-label">Läufe / Woche</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="adjustGoal('runs',-1)">−</button>
-            <div class="ns-val" id="goalRuns">3</div>
-            <button class="ns-btn" onclick="adjustGoal('runs',1)">+</button>
-          </div>
-        </div>
-        <div>
-          <label class="field-label">Stretching / Woche</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="adjustGoal('stretching',-1)">−</button>
-            <div class="ns-val" id="goalStretching">5</div>
-            <button class="ns-btn" onclick="adjustGoal('stretching',1)">+</button>
-          </div>
-        </div>
-        <div>
-          <label class="field-label">Zone 2 Läufe / Woche</label>
-          <div class="num-stepper">
-            <button class="ns-btn" onclick="adjustGoal('zone2',-1)">−</button>
-            <div class="ns-val" id="goalZone2">2</div>
-            <button class="ns-btn" onclick="adjustGoal('zone2',1)">+</button>
-          </div>
-        </div>
-      </div>
+      <div id="addExList"></div>
     </div>
   </div>
 
@@ -1850,112 +1548,6 @@ html, body {
     <div id="calisthenicsDisplay"></div>
   </div>
 
-  <!-- ════════ TRACKING ════════ -->
-  <div id="screen-tracking" class="screen">
-    <div class="page-header">
-      <div class="page-title">📈 Tracking</div>
-      <div class="page-subtitle">Befinden, Gewicht & Aktivität</div>
-    </div>
-
-    <!-- Tages Check-In -->
-    <div class="card">
-      <div class="card-title">Tages Check-In</div>
-
-      <div style="margin-bottom:16px;">
-        <label class="field-label">Wie fühlst du dich heute? (1–10)</label>
-        <div class="recovery-score">
-          <div class="score-display" id="scoreDisplay">7</div>
-          <div style="flex:1">
-            <input type="range" class="slider" id="recoverySlider" min="1" max="10" value="7" oninput="updateRecovery()">
-            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-top:4px;">
-              <span>Erschöpft</span><span>OK</span><span>Topfit</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:16px;">
-        <label class="field-label">Schlaf</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <div>
-            <label class="field-label" style="font-size:11px;">Stunden geschlafen</label>
-            <div class="num-stepper">
-              <button class="ns-btn" onclick="stepField('sleepHours',-0.5)">−</button>
-              <input class="ns-val field-input" type="number" id="sleepHours" value="7.5" step="0.5" min="0" max="12" style="border:none;background:none;width:60px;text-align:center;font-size:17px;font-weight:700;" oninput="updateRecovery()">
-              <button class="ns-btn" onclick="stepField('sleepHours',0.5)">+</button>
-            </div>
-          </div>
-          <div>
-            <label class="field-label" style="font-size:11px;">Schlafqualität</label>
-            <div class="num-stepper">
-              <button class="ns-btn" onclick="stepField('sleepQuality',-1)">−</button>
-              <input class="ns-val field-input" type="number" id="sleepQuality" value="7" step="1" min="1" max="10" style="border:none;background:none;width:60px;text-align:center;font-size:17px;font-weight:700;" oninput="updateRecovery()">
-              <button class="ns-btn" onclick="stepField('sleepQuality',1)">+</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-bottom:16px;">
-        <label class="field-label">Wie fühlst du dich?</label>
-        <div class="check-pills">
-          <label class="check-pill" id="pill-sleep"><input type="checkbox" id="sleepGood" onchange="updateRecovery()">😴 Erholt</label>
-          <label class="check-pill" id="pill-energy"><input type="checkbox" id="energyHigh" onchange="updateRecovery()">⚡ Energie hoch</label>
-          <label class="check-pill" id="pill-pain"><input type="checkbox" id="noPain" onchange="updateRecovery()">💪 Keine Schmerzen</label>
-          <label class="check-pill" id="pill-appetite"><input type="checkbox" id="goodAppetite" onchange="updateRecovery()">🍖 Guter Appetit</label>
-        </div>
-      </div>
-
-      <button class="btn-primary" onclick="saveCheckin()">💾 Check-In speichern</button>
-
-      <div class="recovery-tip" id="recoveryTip" style="margin-top:12px;">Bewerte dich für eine Trainingsempfehlung.</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Gewicht eintragen</div>
-      <div class="field-group">
-        <label class="field-label">Gewicht (kg)</label>
-        <div class="num-stepper">
-          <button class="ns-btn" onclick="stepField('weightInput',-0.1)">−</button>
-          <input class="ns-val field-input" type="number" id="weightInput" value="82.0" step="0.1" style="border:none;background:none;width:80px;text-align:center;font-size:17px;font-weight:700;">
-          <button class="ns-btn" onclick="stepField('weightInput',0.1)">+</button>
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Datum</label>
-        <input type="date" class="field-input" id="weightDate">
-      </div>
-      <button class="btn-primary" onclick="addWeight()">➕ Gewicht speichern</button>
-      <div class="divider"></div>
-      <div id="weightHistory"></div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">📱 Amazfit Aktivität</div>
-      <div class="field-group">
-        <label class="field-label">Schritte</label>
-        <div class="num-stepper">
-          <button class="ns-btn" onclick="stepField('stepsInput',-500)">−</button>
-          <input class="ns-val field-input" type="number" id="stepsInput" value="0" step="500" style="border:none;background:none;width:80px;text-align:center;font-size:17px;font-weight:700;">
-          <button class="ns-btn" onclick="stepField('stepsInput',500)">+</button>
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Ø Herzfrequenz (bpm)</label>
-        <div class="num-stepper">
-          <button class="ns-btn" onclick="stepField('hrInput',-1)">−</button>
-          <input class="ns-val field-input" type="number" id="hrInput" value="0" style="border:none;background:none;width:80px;text-align:center;font-size:17px;font-weight:700;">
-          <button class="ns-btn" onclick="stepField('hrInput',1)">+</button>
-        </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Andere Sportart</label>
-        <input type="text" class="field-input" id="otherSportInput" placeholder="z.B. Padel 60 Min">
-      </div>
-      <button class="btn-primary" onclick="saveActivity()">💾 Speichern</button>
-    </div>
-  </div>
-
   <!-- ════════ NUTRITION ════════ -->
   <div id="screen-nutrition" class="screen">
     <div class="page-header">
@@ -2053,7 +1645,7 @@ html, body {
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <div class="card-title" style="margin:0;">📚 Gespeicherte Rezepte</div>
-        <button onclick="goTo('shopping')" style="background:rgba(52,152,219,0.15);border:1px solid var(--blue);color:var(--blue);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;">🛒 Einkaufsliste</button>
+
       </div>
       <div id="savedRecipesDisplay">
         <div style="color:var(--text2);font-size:13px;text-align:center;padding:16px;">Noch keine Rezepte gespeichert</div>
@@ -2061,17 +1653,54 @@ html, body {
     </div>
   </div>
 
-  <!-- ════════ SHOPPING ════════ -->
-  <div id="screen-shopping" class="screen">
+  <!-- ════════ PLANS ════════ -->
+  <div id="screen-plans" class="screen">
     <div class="page-header">
-      <div class="page-title">🛒 Einkaufsliste</div>
-      <div class="page-subtitle">Aus gespeicherten Rezepten</div>
+      <div class="page-title">📋 Trainingspläne</div>
+      <div class="page-subtitle">Mesozyklus auswählen & anpassen</div>
     </div>
-    <div class="card">
-      <button class="btn-primary" onclick="generateShoppingList()" style="margin-bottom:16px;">🔄 Liste generieren</button>
-      <div id="shoppingListDisplay">
-        <div style="color:var(--text2);font-size:13px;text-align:center;padding:16px;">Speichere zuerst Rezepte um eine Liste zu erstellen</div>
+
+    <!-- Aktiver Plan -->
+    <div id="activePlanCard"></div>
+
+    <!-- Verfügbare Pläne -->
+    <div class="card-title" style="margin:16px 0 8px;">Verfügbare Pläne</div>
+    <div id="availablePlansDisplay"></div>
+
+    <!-- Plan Detail Modal Trigger -->
+  </div>
+
+  <!-- ════════ PLAN DETAIL MODAL ════════ -->
+  <div class="modal-overlay" id="planDetailModal">
+    <div class="modal-sheet" style="max-height:92vh;overflow-y:auto;padding-bottom:40px;">
+      <div class="modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div>
+          <div class="modal-title" id="planDetailName">Plan</div>
+          <div class="modal-sub" id="planDetailSub"></div>
+        </div>
+        <button onclick="closePlanDetail()" style="background:none;border:none;color:var(--text2);font-size:22px;cursor:pointer;">✕</button>
       </div>
+
+      <!-- Mesozyklus Länge -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-title">Mesozyklus-Länge</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="mesoLengthPicker"></div>
+      </div>
+
+      <!-- Trainingstage -->
+      <div class="card" style="margin-bottom:12px;">
+        <div class="card-title">Trainingstage pro Woche</div>
+        <div style="display:flex;gap:8px;" id="trainingDaysPicker"></div>
+      </div>
+
+      <!-- Wochen-Übersicht -->
+      <div id="planWeeksDisplay"></div>
+
+      <!-- Aktiv setzen -->
+      <button class="btn-success" onclick="activatePlan()" id="activatePlanBtn" style="margin-top:8px;">
+        ✅ Plan aktivieren
+      </button>
     </div>
   </div>
 
@@ -2145,25 +1774,21 @@ html, body {
       <span class="nav-icon">🏠</span>
       <span>Home</span>
     </button>
-    <button class="nav-item" onclick="goTo('nutrition')" id="nav-nutrition">
-      <span class="nav-icon">🍗</span>
-      <span>Essen</span>
+    <button class="nav-item" onclick="goTo('plans')" id="nav-plans">
+      <span class="nav-icon">📋</span>
+      <span>Pläne</span>
     </button>
     <button class="nav-item" onclick="goTo('training')" id="nav-training">
       <span class="nav-icon">🏋️</span>
       <span>Training</span>
     </button>
-    <button class="nav-item" onclick="goTo('running')" id="nav-running">
-      <span class="nav-icon">🏃</span>
-      <span>Laufen</span>
+    <button class="nav-item" onclick="goTo('nutrition')" id="nav-nutrition">
+      <span class="nav-icon">🍗</span>
+      <span>Essen</span>
     </button>
     <button class="nav-item" onclick="goTo('calisthenics')" id="nav-calisthenics">
       <span class="nav-icon">🤸</span>
       <span>Skills</span>
-    </button>
-    <button class="nav-item" onclick="goTo('tracking')" id="nav-tracking">
-      <span class="nav-icon">📈</span>
-      <span>Tracking</span>
     </button>
     <button class="nav-item" onclick="goTo('settings')" id="nav-settings">
       <span class="nav-icon">⚙️</span>
@@ -2180,23 +1805,20 @@ html, body {
 // DATA
 // ═══════════════════════════════════════════
 let appData = {
-    weights: JSON.parse(localStorage.getItem('weights')) || [],
-    activities: JSON.parse(localStorage.getItem('activities')) || {},
     workouts: JSON.parse(localStorage.getItem('workouts')) || [],
     completedExercises: JSON.parse(localStorage.getItem('completedExercises')) || {},
     calisthenicsProgress: JSON.parse(localStorage.getItem('calisthenicsProgress')) || {},
-    runs: JSON.parse(localStorage.getItem('runs')) || [],
-    water: JSON.parse(localStorage.getItem('water')) || {},
     progressionHistory: JSON.parse(localStorage.getItem('progressionHistory')) || {},
-    weeklyGoals: JSON.parse(localStorage.getItem('weeklyGoals')) || { strength: 4, runs: 3, stretching: 5, zone2: 2 },
+    weeklyGoals: JSON.parse(localStorage.getItem('weeklyGoals')) || { strength:4, stretching:3 },
     swappedExercises: JSON.parse(localStorage.getItem('swappedExercises')) || {},
     skillSessions: JSON.parse(localStorage.getItem('skillSessions')) || {},
-    checkins: JSON.parse(localStorage.getItem('checkins')) || {},
     macros: JSON.parse(localStorage.getItem('macros')) || {},
     savedRecipes: JSON.parse(localStorage.getItem('savedRecipes')) || [],
     todayRecipe: JSON.parse(localStorage.getItem('todayRecipe')) || null,
     setLog: JSON.parse(localStorage.getItem('setLog')) || {},
+    activePlan: JSON.parse(localStorage.getItem('activePlan')) || null,
     recovery: 7,
+    lastSessionFocus: null,
     lastSessionFocus: null
 };
 
@@ -2205,7 +1827,7 @@ let runTime = 30;
 let currentModalExId = null;
 let currentModalExName = null;
 
-const USER_AGE = 31;
+
 const ZONE2_MAX = 180 - USER_AGE;
 const ZONE2_MIN = ZONE2_MAX - 10;
 
@@ -2219,11 +1841,10 @@ function goTo(name) {
     const nav = document.getElementById('nav-' + name);
     if (screen) { screen.classList.add('active'); screen.scrollTop = 0; }
     if (nav) nav.classList.add('active');
-    if (name === 'home') { updateDashboard(); updateHomeWeekly(); }
+    if (name === 'home') { updateDashboard(); updateHomeMeso(); }
     if (name === 'training') initTrainingScreen();
-    if (name === 'weekly') updateWeeklyView();
+    if (name === 'plans') initPlansScreen();
     if (name === 'nutrition') initNutrition();
-    if (name === 'shopping') generateShoppingList();
 }
 
 function getToday() {
@@ -2233,63 +1854,101 @@ function getToday() {
 
 function initTrainingScreen() {
     try {
-        // ── Lokales Datum ──
         const now = new Date();
-        const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-
-        // ── Aktivitäts-Pills immer zurücksetzen ──
-        const actNone = document.getElementById('actNone');
-        if (actNone) actNone.checked = true;
-        ['none','swim','padel','tennis','walk','bike'].forEach(id => {
-            const pill = document.getElementById('apill-' + id);
-            if (pill) pill.classList.toggle('checked', id === 'none');
-        });
-        const durationRow = document.getElementById('activityDurationRow');
-        if (durationRow) durationRow.style.display = 'none';
-        activityDuration = 60;
-
-        // ── Focus Pills: Smart Reset ──
-        // Schaue nur echte Trainingstage der letzten 7 Tage (nicht heute)
-        const last7Days = Array.from({length:7}, (_,i) => {
-            const d = new Date(now);
-            d.setDate(d.getDate() - (i+1));
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        });
-
-        const recentWorkouts = (appData.workouts || [])
-            .filter(w => w && last7Days.includes(w.date) && w.focus && w.focus !== 'mixed');
-
-        // Gruppen der letzten 2 Tage → diese NICHT vorschlagen
-        const last2Days = last7Days.slice(0, 2);
-        const recentlyTrained = [...new Set(
-            recentWorkouts
-                .filter(w => last2Days.includes(w.date))
-                .map(w => w.focus)
-        )];
+        const today = getToday();
 
         // Alle Pills zurücksetzen
-        const allFocusPills = ['back','legs','shoulders','arms','stretching'];
-        allFocusPills.forEach(g => {
-            const cb = document.getElementById('focus' + g.charAt(0).toUpperCase() + g.slice(1));
-            const pill = document.getElementById('fpill-' + g);
+        const allGroups = ['back','legs','chest','shoulders','arms','stretching'];
+        allGroups.forEach(g => {
+            const key = g === 'stretch' ? 'Stretching' : g.charAt(0).toUpperCase() + g.slice(1);
+            const cb = document.getElementById('focus' + key);
+            const pill = document.getElementById('fpill-' + (g === 'stretching' ? 'stretch' : g));
             if (cb) cb.checked = false;
             if (pill) pill.classList.remove('checked');
         });
 
-        // Smart Vorschlag: was wurde in letzten 2 Tagen NICHT trainiert
-        const priorityOrder = ['back','legs','shoulders','arms'];
-        let suggested = priorityOrder.filter(g => !recentlyTrained.includes(g)).slice(0, 2);
-        if (suggested.length === 0) suggested = ['back', 'legs']; // Fallback
+        // ── Aktiver Plan? → lade passende Session ──
+        const active = appData.activePlan;
+        const banner = document.getElementById('trainingPlanBanner');
+        const bannerContent = document.getElementById('trainingPlanBannerContent');
 
-        suggested.forEach(g => {
-            const cb = document.getElementById('focus' + g.charAt(0).toUpperCase() + g.slice(1));
-            const pill = document.getElementById('fpill-' + g);
-            if (cb) cb.checked = true;
-            if (pill) pill.classList.add('checked');
-        });
+        if (active) {
+            const plan = MESO_PLANS.find(p => p.id === active.planId);
+            if (plan) {
+                // Welche Session heute? Basierend auf letzter Session im Plan
+                const completedSessions = active.completedSessions || [];
+                const nextSessionIdx = completedSessions.length % plan.sessions.length;
+                const session = plan.sessions[nextSessionIdx];
 
-        generateWorkout();
+                // Meso-Woche berechnen
+                const startDate = new Date(active.startDate);
+                const daysDiff = Math.floor((now - startDate) / (1000*60*60*24));
+                const currentWeek = Math.min(Math.floor(daysDiff / 7) + 1, active.mesoWeeks);
+                const { label, color } = getMesoWeekLabel(currentWeek, active.mesoWeeks);
+                const isDeload = currentWeek === active.mesoWeeks;
+
+                // Session Banner zeigen
+                if (banner) banner.style.display = 'block';
+                if (bannerContent) bannerContent.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+                        <div>
+                            <div style="font-size:11px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">${plan.emoji} ${plan.name}</div>
+                            <div style="font-weight:800;font-size:16px;margin-top:2px;">${session.name}</div>
+                        </div>
+                        <span style="background:${color};color:#fff;padding:3px 10px;border-radius:16px;font-size:11px;font-weight:800;">Wo ${currentWeek} · ${label}</span>
+                    </div>
+                    ${isDeload ? '<div style="font-size:12px;color:var(--blue);margin-bottom:8px;">🔵 Deload-Woche: -40% Gewicht, 50% Sätze</div>' : ''}
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        ${plan.sessions.map((s, i) => `
+                            <button onclick="loadPlanSession(${i})" style="padding:6px 12px;border-radius:20px;border:2px solid ${i===nextSessionIdx?'var(--accent)':'var(--border)'};background:${i===nextSessionIdx?'rgba(255,107,53,0.15)':'none'};color:${i===nextSessionIdx?'var(--accent)':'var(--text2)'};font-size:12px;font-weight:700;cursor:pointer;">
+                                ${s.name.split('—')[0].trim()}
+                            </button>`).join('')}
+                    </div>`;
+
+                // Auto-load die nächste Session
+                loadPlanSession(nextSessionIdx);
+                return;
+            }
+        }
+
+        // Kein Plan aktiv → alle Pills leer, User wählt selbst
+        if (banner) banner.style.display = 'none';
+        const display = document.getElementById('workoutDisplay');
+        if (display) display.innerHTML = `<div class="card"><div class="empty-card">
+            <div class="empty-emoji">💪</div>
+            <div class="empty-text">Wähle eine Muskelgruppe oder aktiviere einen Plan</div>
+            <button onclick="goTo('plans')" style="margin-top:12px;background:rgba(255,107,53,0.12);border:1.5px solid var(--accent);color:var(--accent);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📋 Plan auswählen</button>
+        </div></div>`;
     } catch(e) { console.error('initTrainingScreen:', e); }
+}
+
+function loadPlanSession(sessionIdx) {
+    const active = appData.activePlan;
+    if (!active) return;
+    const plan = MESO_PLANS.find(p => p.id === active.planId);
+    if (!plan || !plan.sessions[sessionIdx]) return;
+    const session = plan.sessions[sessionIdx];
+
+    // Pills setzen basierend auf Session-Gruppen
+    const allGroups = ['back','legs','chest','shoulders','arms','stretching'];
+    allGroups.forEach(g => {
+        const cb = document.getElementById('focus' + g.charAt(0).toUpperCase() + g.slice(1));
+        const pill = document.getElementById('fpill-' + (g === 'stretching' ? 'stretch' : g));
+        const shouldCheck = session.groups.includes(g);
+        if (cb) cb.checked = shouldCheck;
+        if (pill) pill.classList.toggle('checked', shouldCheck);
+    });
+
+    // Banner Button-Highlight aktualisieren
+    const bannerBtns = document.querySelectorAll('#trainingPlanBannerContent button');
+    bannerBtns.forEach((btn, i) => {
+        const isActive = i === sessionIdx;
+        btn.style.borderColor = isActive ? 'var(--accent)' : 'var(--border)';
+        btn.style.background = isActive ? 'rgba(255,107,53,0.15)' : 'none';
+        btn.style.color = isActive ? 'var(--accent)' : 'var(--text2)';
+    });
+
+    generateWorkout();
 }
 
 // ═══════════════════════════════════════════
@@ -2478,6 +2137,38 @@ const rpExercises = {
         },
     ],
 
+    // ── BRUST: Dumbbell + Cable Fokus ────────────────────
+    chest: [
+        {
+            name: 'Dumbbell Flyes (Flachbank)',
+            sets: '3-4', reps: '10-15', rpe: '7-8', rest: '90s',
+            tip: 'Arme leicht gebeugt, tief absenken für maximalen Stretch. RP favorisiert Flyes wegen Stretch unter Last.',
+            focus: 'Brust — maximaler Stretch',
+            priority: 1, myorep: false
+        },
+        {
+            name: 'Cable Crossover (Low to High)',
+            sets: '3-4', reps: '12-15', rpe: '6-7', rest: '60s',
+            tip: 'Kabel tief ansetzen, kreuze Hände oben. Konstante Spannung durch gesamten Bewegungsumfang.',
+            focus: 'Untere + mittlere Brust',
+            priority: 1, myorep: true
+        },
+        {
+            name: 'Incline Dumbbell Press',
+            sets: '3-4', reps: '8-12', rpe: '7-8', rest: '2min',
+            tip: 'Bank 30-45°. Voller ROM — Kurzhanteln tief neben Brust für maximalen Stretch. Obere Brust Fokus.',
+            focus: 'Obere Brust — Compound',
+            priority: 2, myorep: false
+        },
+        {
+            name: 'Cable Fly (mittlere Höhe)',
+            sets: '3', reps: '12-20', rpe: '6-7', rest: '60s',
+            tip: 'Kabel auf Schulterhöhe, Hände treffen sich vor der Brust. Langsame Negative für maximale Dehnung.',
+            focus: 'Mittlere Brust — Isolation',
+            priority: 2, myorep: true
+        },
+    ],
+
     // ── ARME: Bizeps, Trizeps, Unterarme ─────────────────
     // Schwachpunkte: Unterarme besonders berücksichtigt
     arms: [
@@ -2605,13 +2296,6 @@ function updateDashboard() {
         const greetingEl = document.getElementById('homeGreeting');
         if (greetingEl) greetingEl.textContent = greeting;
 
-        // Weight
-        const latestWeight = appData.weights.length > 0 ? appData.weights[appData.weights.length - 1].weight : 82;
-        const dashW = document.getElementById('dashWeight');
-        if (dashW) dashW.innerHTML = `${latestWeight.toFixed(1)}<span class="stat-unit">kg</span>`;
-        const dashWBar = document.getElementById('dashWeightBar');
-        if (dashWBar) dashWBar.style.width = Math.min(Math.max(((latestWeight - 82) / 8) * 100, 0), 100) + '%';
-
         // Streak
         const streak = calcStreak();
         const dashStreak = document.getElementById('dashStreak');
@@ -2619,94 +2303,19 @@ function updateDashboard() {
         const dashStreakSub = document.getElementById('dashStreakSub');
         if (dashStreakSub) dashStreakSub.textContent = streak >= 7 ? '🔥 Auf Feuer!' : streak >= 3 ? '💪 Weiter so!' : streak > 0 ? 'Bleib dran!' : 'Starte heute!';
 
-        // Calories
-        const BASE = 2500;
-        let extra = 0;
-        const sources = [];
-        const todayWorkouts = (appData.workouts || []).filter(w => w && w.date === today);
-        const completedToday = (appData.completedExercises && appData.completedExercises[today]) ? appData.completedExercises[today].length : 0;
-        const hadStrength = todayWorkouts.length > 0 && completedToday > 0;
-        if (hadStrength) { const k = Math.round(completedToday * 40 + 150); extra += k; sources.push({ icon: '🏋️', name: 'Krafttraining', kcal: k, detail: `${completedToday} Übungen` }); }
-
-        const todayRuns = (appData.runs || []).filter(r => r && r.date === today && r.completed && r.distance);
-        todayRuns.forEach(r => { const k = Math.round(8 * 82 * ((r.duration || 30) / 60)); extra += k; sources.push({ icon: '🏃', name: `Lauf ${r.distance}km`, kcal: k, detail: `Ø ${r.avgHr || '?'} bpm` }); });
-
-        const act = appData.activities && appData.activities[today];
-        if (act && act.sport) {
-            const sportMatch = act.sport.match(/^(.+?)\s+(\d+)min$/);
-            const sportName = sportMatch ? sportMatch[1] : act.sport;
-            const sportDur = sportMatch ? parseInt(sportMatch[2]) : 60;
-            const cfg = ACTIVITY_CONFIG[sportName];
-            const k = cfg ? Math.round(cfg.kcalPerMin * sportDur) : 350;
-            const icon = cfg ? cfg.emoji : '⚡';
-            extra += k;
-            sources.push({ icon, name: act.sport, kcal: k, detail: 'Heute absolviert' });
-        }
-
-        const totalCal = BASE + extra;
+        // Kalorien (Training-basiert)
+        const completedToday = (appData.completedExercises?.[today] || []).length;
+        const hadStrength = (appData.workouts || []).some(w => w?.date === today) && completedToday > 0;
+        const extra = hadStrength ? Math.round(completedToday * 40 + 150) : 0;
+        const totalCal = 2500 + extra;
         const dashCal = document.getElementById('dashCalories');
         if (dashCal) dashCal.innerHTML = `${totalCal.toLocaleString('de-DE')}<span class="stat-unit">kcal</span>`;
         const dashCalSub = document.getElementById('dashCaloriesSub');
         if (dashCalSub) dashCalSub.textContent = extra > 0 ? `Basis 2500 + ${extra} Training` : 'Basis ohne Training';
 
-        // Activity
-        const actEl = document.getElementById('dashActivity');
-        if (actEl) {
-            if (sources.length === 0) {
-                const msgs = [
-                    'Noch kein Training – schon 20 Minuten machen den Unterschied! 💪',
-                    'Der Tag ist noch jung! Starte mit einem kurzen Workout. 🔥',
-                    'Du weißt, du fühlst dich danach besser! ⚡',
-                    'Kein Training heute? Dein zukünftiges Ich zählt auf dich! 🚀',
-                ];
-                actEl.innerHTML = `<div class="empty-card"><div class="empty-emoji">🎯</div><div class="empty-text">${msgs[new Date().getDay() % msgs.length]}</div></div>`;
-            } else {
-                actEl.innerHTML = sources.map(s => `
-                  <div class="activity-item">
-                    <div class="activity-icon" style="background:rgba(255,107,53,0.1);">${s.icon}</div>
-                    <div class="activity-info">
-                      <div class="activity-name">${s.name}</div>
-                      <div class="activity-detail">${s.detail}</div>
-                    </div>
-                    <div class="activity-kcal">+${s.kcal} kcal</div>
-                  </div>`).join('') +
-                  `<div style="padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;margin-top:4px;">
-                    <span style="color:var(--text2);font-size:13px;">Gesamt-Ziel</span>
-                    <span style="font-weight:700;color:var(--gold);">${totalCal.toLocaleString('de-DE')} kcal</span>
-                   </div>`;
-            }
-        }
-
-        // Check-In Zusammenfassung auf Home
-        const checkinEl = document.getElementById('homeCheckinSummary');
-        if (checkinEl) {
-            const todayCheckin = appData.checkins && appData.checkins[today];
-            if (todayCheckin) {
-                const score = todayCheckin.score;
-                const scoreColor = score >= 7 ? 'var(--success)' : score >= 5 ? 'var(--warning)' : 'var(--danger)';
-                const pills = [
-                    todayCheckin.sleepGood && '😴 Erholt',
-                    todayCheckin.energyHigh && '⚡ Energie hoch',
-                    todayCheckin.noPain && '💪 Keine Schmerzen',
-                    todayCheckin.goodAppetite && '🍖 Guter Appetit',
-                ].filter(Boolean);
-                checkinEl.innerHTML = `
-                    <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px;">
-                        <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,107,53,0.15);border:2px solid ${scoreColor};display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:${scoreColor};">${score}</div>
-                        <div>
-                            <div style="font-weight:700;font-size:14px;">${score >= 9 ? '🚀 PR-Tag!' : score >= 7 ? '✅ Gutes Niveau' : score >= 5 ? '⚠️ Reduziert' : '🔴 Leichter Tag'}</div>
-                            <div style="font-size:12px;color:var(--text2);">😴 ${todayCheckin.sleepHours}h Schlaf · Qualität ${todayCheckin.sleepQuality}/10</div>
-                        </div>
-                    </div>
-                    ${pills.length > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:6px;">${pills.map(p => `<span style="font-size:12px;padding:4px 10px;background:rgba(46,204,113,0.1);border-radius:12px;color:var(--success);">${p}</span>`).join('')}</div>` : ''}`;
-            } else {
-                checkinEl.innerHTML = '<div style="color:var(--text2);font-size:13px;">Noch kein Check-In heute — tippe hier zum Eintragen.</div>';
-            }
-        }
-
-        // ── MAKRO DASHBOARD ────────────────────────────────
-        const todayMacros = (appData.macros && appData.macros[today]) || { cal:0, prot:0, carb:0, fat:0 };
-        const totalCalTarget = extra > 0 ? (2500 + extra) : 2500;
+        // Makros
+        const todayMacros = (appData.macros?.[today]) || { cal:0, prot:0, carb:0, fat:0 };
+        const totalCalTarget = totalCal;
         const protTarget = 140;
         const carbTarget = Math.round((totalCalTarget * 0.35) / 4);
         const fatTarget = Math.round((totalCalTarget * 0.25) / 9);
@@ -2714,76 +2323,51 @@ function updateDashboard() {
         const setEl = (id, val) => { const e = document.getElementById(id); if (e) e.textContent = val; };
         const setBar = (id, val, max) => { const e = document.getElementById(id); if (e) e.style.width = Math.min(Math.round((val/Math.max(max,1))*100),100) + '%'; };
 
-        setEl('homeMacroCal', todayMacros.cal || 0);
-        setEl('homeCalTarget', totalCalTarget);
-        setEl('homeProt', todayMacros.prot || 0);
-        setEl('homeProtTarget', protTarget);
-        setEl('homeCarb', todayMacros.carb || 0);
-        setEl('homeCarbTarget', carbTarget);
-        setEl('homeFat', todayMacros.fat || 0);
-        setEl('homeFatTarget', fatTarget);
-
+        setEl('homeMacroCal', todayMacros.cal || 0); setEl('homeCalTarget', totalCalTarget);
+        setEl('homeProt', todayMacros.prot || 0);    setEl('homeProtTarget', protTarget);
+        setEl('homeCarb', todayMacros.carb || 0);    setEl('homeCarbTarget', carbTarget);
+        setEl('homeFat', todayMacros.fat || 0);      setEl('homeFatTarget', fatTarget);
         setBar('homeCalBar', todayMacros.cal, totalCalTarget);
         setBar('homeProtBar', todayMacros.prot, protTarget);
         setBar('homeCarbBar', todayMacros.carb, carbTarget);
         setBar('homeFatBar', todayMacros.fat, fatTarget);
 
-        // Kaloriendefizit Hinweis
         const calDeltaEl = document.getElementById('homeCalDelta');
         if (calDeltaEl) {
             const missing = totalCalTarget - (todayMacros.cal || 0);
-            if (missing > 100) calDeltaEl.textContent = `Noch ${missing.toLocaleString('de-DE')} kcal bis Tagesziel`;
-            else if (missing <= 0) calDeltaEl.textContent = '✅ Tagesziel erreicht!';
-            else calDeltaEl.textContent = `Fast geschafft — noch ${missing} kcal`;
+            calDeltaEl.textContent = missing <= 0 ? '✅ Tagesziel erreicht!' : missing < 100 ? `Fast geschafft — noch ${missing} kcal` : `Noch ${missing.toLocaleString('de-DE')} kcal bis Tagesziel`;
         }
 
-        // ── SNACK-VORSCHLAG ─────────────────────────────────
+        // Snack-Vorschlag
         const snackEl = document.getElementById('homeSnackSuggestion');
         const snackTextEl = document.getElementById('homeSnackText');
         const missingProt = protTarget - (todayMacros.prot || 0);
         const missingCal = totalCalTarget - (todayMacros.cal || 0);
-
         if (snackEl && snackTextEl && missingCal > 100) {
             snackEl.style.display = 'block';
-            // Snack-Vorschläge basierend auf was fehlt
-            const snacks = [];
-
-            if (missingProt > 30) {
-                // Viel Protein fehlt
-                if (missingCal < 300) snacks.push({ name: 'Skyr (200g)', prot: 20, kcal: 110, tip: 'Schnell, proteinreich, wenig Kalorien' });
-                else if (missingCal < 500) snacks.push({ name: '3 Eier (hart gekocht)', prot: 18, kcal: 210, tip: 'Ideal als Snack, sättigt lang' });
-                else snacks.push({ name: 'Thunfisch (Dose, 185g) + Reis (100g)', prot: 38, kcal: 420, tip: 'Perfekte Makros, 5 Minuten Zubereitung' });
-            } else if (missingProt > 15) {
-                snacks.push({ name: 'Griechisches Joghurt (200g) + Beeren', prot: 16, kcal: 170, tip: 'Protein + Antioxidantien' });
-            } else if (missingCal > 200) {
-                snacks.push({ name: 'Banane + Erdnussbutter (1 EL)', prot: 5, kcal: 230, tip: 'Energie-Boost für Kalorien' });
-            } else {
-                snacks.push({ name: 'Handvoll Beeren + Skyr (150g)', prot: 15, kcal: 130, tip: 'Leicht und nährstoffreich' });
-            }
-
-            const s = snacks[0];
+            let s;
+            if (missingProt > 30 && missingCal < 300) s = { name:'Skyr (200g)', prot:20, kcal:110, tip:'Schnell, proteinreich' };
+            else if (missingProt > 30 && missingCal < 500) s = { name:'3 Eier (hart gekocht)', prot:18, kcal:210, tip:'Sättigt lang' };
+            else if (missingProt > 30) s = { name:'Thunfisch + Reis', prot:38, kcal:420, tip:'Perfekte Makros, 5 Min' };
+            else if (missingProt > 15) s = { name:'Griechisches Joghurt + Beeren', prot:16, kcal:170, tip:'Protein + Antioxidantien' };
+            else s = { name:'Banane + Erdnussbutter', prot:5, kcal:230, tip:'Energie-Boost' };
             snackTextEl.innerHTML = `<strong>${s.name}</strong><br>💪 ${s.prot}g Protein · 🔥 ${s.kcal} kcal<br><span style="color:var(--text2);font-size:12px;">${s.tip}</span>`;
-        } else if (snackEl) {
-            snackEl.style.display = 'none';
-        }
+        } else if (snackEl) { snackEl.style.display = 'none'; }
 
     } catch(e) { console.error('updateDashboard:', e); }
 }
 
 function calcStreak() {
     try {
-        const allDates = new Set([
-            ...(appData.workouts || []).filter(w => w && w.date).map(w => w.date),
-            ...(appData.runs || []).filter(r => r && r.completed && r.date).map(r => r.date)
-        ]);
+        const allDates = new Set((appData.workouts || []).filter(w => w?.date).map(w => w.date));
         if (allDates.size === 0) return 0;
         let streak = 0;
-        const d = new Date(); d.setHours(0,0,0,0);
+        const now = new Date(); now.setHours(0,0,0,0);
         for (let i = 0; i < 60; i++) {
-            const ds = d.toISOString().split('T')[0];
-            if (allDates.has(ds)) { streak++; }
+            const ds = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+            if (allDates.has(ds)) streak++;
             else if (i > 0) break;
-            d.setDate(d.getDate() - 1);
+            now.setDate(now.getDate() - 1);
         }
         return streak;
     } catch(e) { return 0; }
@@ -2792,90 +2376,29 @@ function calcStreak() {
 // ═══════════════════════════════════════════
 // RECOVERY
 // ═══════════════════════════════════════════
-function updateRecovery() {
-    try {
-        const sliderEl = document.getElementById('recoverySlider');
-        if (!sliderEl) return;
-        const score = parseInt(sliderEl.value);
-        const scoreEl = document.getElementById('scoreDisplay');
-        if (scoreEl) scoreEl.textContent = score;
-        appData.recovery = score;
 
-        ['sleep','energy','pain','appetite'].forEach(k => {
-            const pill = document.getElementById('pill-' + k);
-            const cb = document.getElementById({ sleep:'sleepGood', energy:'energyHigh', pain:'noPain', appetite:'goodAppetite' }[k]);
-            if (pill && cb) pill.classList.toggle('checked', cb.checked);
-        });
 
-        const tipEl = document.getElementById('recoveryTip');
-        if (tipEl) {
-            if (score >= 9)      tipEl.textContent = '🚀 Top-Zustand! Perfekter Tag für neue Bestleistungen.';
-            else if (score >= 7) tipEl.textContent = '✅ Gutes Niveau — normales Volumen & Intensität.';
-            else if (score >= 5) tipEl.textContent = '⚠️ Volumen leicht reduziert (~20%). Fokus auf saubere Ausführung.';
-            else if (score >= 3) tipEl.textContent = '🔴 Wenig Energie — Volumen stark reduziert. Technik über Last.';
-            else                 tipEl.textContent = '🛑 Erholung hat Priorität! Nur Stretching heute.';
-        }
 
-        // Dashboard Recovery Box
-        const dashScore = document.getElementById('dashRecoveryScore');
-        const dashLabel = document.getElementById('dashRecoveryLabel');
-        if (dashScore) dashScore.innerHTML = `${score}<span class="stat-unit">/10</span>`;
-        if (dashLabel) {
-            if (score >= 9)      dashLabel.textContent = '🚀 PR-Tag!';
-            else if (score >= 7) dashLabel.textContent = '✅ Gutes Niveau';
-            else if (score >= 5) dashLabel.textContent = '⚠️ Reduziert';
-            else if (score >= 3) dashLabel.textContent = '🔴 Leichter Tag';
-            else                 dashLabel.textContent = '🛑 Nur Stretching';
-        }
-    } catch(e) { console.error('updateRecovery:', e); }
-}
-
-function saveCheckin() {
-    try {
-        const today = getToday();
-        const score = parseInt(document.getElementById('recoverySlider')?.value) || 7;
-        const sleepHours = parseFloat(document.getElementById('sleepHours')?.value) || 7.5;
-        const sleepQuality = parseInt(document.getElementById('sleepQuality')?.value) || 7;
-        const sleepGood = document.getElementById('sleepGood')?.checked || false;
-        const energyHigh = document.getElementById('energyHigh')?.checked || false;
-        const noPain = document.getElementById('noPain')?.checked || false;
-        const goodAppetite = document.getElementById('goodAppetite')?.checked || false;
-
-        if (!appData.checkins) appData.checkins = {};
-        appData.checkins[today] = { score, sleepHours, sleepQuality, sleepGood, energyHigh, noPain, goodAppetite, timestamp: Date.now() };
-        localStorage.setItem('checkins', JSON.stringify(appData.checkins));
-        appData.recovery = score;
-
-        updateDashboard();
-        updateRecovery();
-        showToast('✅ Check-In gespeichert! Training angepasst.', 'success');
-    } catch(e) { console.error('saveCheckin:', e); }
-}
 
 // ═══════════════════════════════════════════
 // TRAINING
 // ═══════════════════════════════════════════
-function adjustTime(delta) {
-    trainingTime = Math.max(20, Math.min(120, trainingTime + delta));
-    const el = document.getElementById('timeDisplay');
-    if (el) el.textContent = trainingTime + ' min';
-    generateWorkout();
-}
+
 
 function generateWorkout() {
     try {
         const today = getToday();
         const selectedBack = document.getElementById('focusBack')?.checked || false;
         const selectedLegs = document.getElementById('focusLegs')?.checked || false;
+        const selectedChest = document.getElementById('focusChest')?.checked || false;
         const selectedShoulders = document.getElementById('focusShoulders')?.checked || false;
         const selectedArms = document.getElementById('focusArms')?.checked || false;
         const selectedStretching = document.getElementById('focusStretching')?.checked || false;
-        const otherSports = getOtherSports();
 
+        // Sync pill UI
         [
-            ['fpill-back','focusBack'],['fpill-legs','focusLegs'],
-            ['fpill-shoulders','focusShoulders'],['fpill-arms','focusArms'],
-            ['fpill-stretch','focusStretching']
+            ['fpill-back','focusBack'],['fpill-legs','focusLegs'],['fpill-chest','focusChest'],
+            ['fpill-shoulders','focusShoulders'],['fpill-arms','focusArms'],['fpill-stretch','focusStretching']
         ].forEach(([pid,cid]) => {
             const pill = document.getElementById(pid);
             const cb = document.getElementById(cid);
@@ -2885,6 +2408,7 @@ function generateWorkout() {
         let focusGroups = [];
         if (selectedBack) focusGroups.push('back');
         if (selectedLegs) focusGroups.push('legs');
+        if (selectedChest) focusGroups.push('chest');
         if (selectedShoulders) focusGroups.push('shoulders');
         if (selectedArms) focusGroups.push('arms');
         if (selectedStretching) focusGroups.push('stretching');
@@ -2895,116 +2419,113 @@ function generateWorkout() {
             return;
         }
 
-        let coaching = '';
-        const history = (appData.workouts || []).filter(w => w && w.date !== today);
-        if (history.length > 0) {
-            const lastFocus = history[history.length - 1].focus;
-            const labelMap = { back:'Rücken', legs:'Beine', shoulders:'Schultern', arms:'Arme' };
-            if (lastFocus && focusGroups.includes(lastFocus)) {
-                coaching = `⚠️ Gestern: ${labelMap[lastFocus]||lastFocus} — selbe Gruppe heute nochmal? Achte auf Recovery!`;
-            }
-        }
-        const hasSwim = ['schwimm','swim'].some(s => otherSports.includes(s));
-        const hasRacket = ['padel','tennis'].some(s => otherSports.includes(s));
-        const hasBike = ['radfahr','bike','radeln'].some(s => otherSports.includes(s));
-        const hasWalk = ['spazier','walk'].some(s => otherSports.includes(s));
-        const activity = getSelectedActivity();
-        const actConfig = ACTIVITY_CONFIG[activity];
-        if (actConfig && actConfig.affectsGroups.some(g => focusGroups.includes(g))) {
-            coaching = `${actConfig.emoji} ${actConfig.suggestion}`;
+        // Meso-Woche bestimmen für Satzanzahl
+        let mesoWeekSets = null;
+        const active = appData.activePlan;
+        if (active) {
+            const startDate = new Date(active.startDate);
+            const now = new Date();
+            const daysDiff = Math.floor((now - startDate) / (1000*60*60*24));
+            const currentWeek = Math.min(Math.floor(daysDiff / 7) + 1, active.mesoWeeks);
+            const { pct } = getMesoWeekLabel(currentWeek, active.mesoWeeks);
+            mesoWeekSets = { pct, week: currentWeek, isDeload: currentWeek === active.mesoWeeks };
         }
 
         const warmupCooldown = 15;
         const available = Math.max(10, trainingTime - warmupCooldown);
         const strengthGroups = focusGroups.filter(g => g !== 'stretching');
-
-        // ── RECOVERY ANPASSUNG ──────────────────────────────
-        const recovery = appData.recovery || 7;
-        let recoveryBanner = '';
-        let exMultiplier = 1.0;
-
-        if (recovery <= 2) {
-            // Nur Stretching — alle Kraft-Gruppen entfernen
-            focusGroups = focusGroups.filter(g => g === 'stretching');
-            if (focusGroups.length === 0) focusGroups = ['stretching'];
-            // Aktiviere Stretching Checkbox automatisch
-            const stretchCb = document.getElementById('focusStretching');
-            const stretchPill = document.getElementById('fpill-stretch');
-            if (stretchCb) stretchCb.checked = true;
-            if (stretchPill) stretchPill.classList.add('checked');
-            recoveryBanner = '🛑 Recovery Score ' + recovery + '/10 — heute nur Stretching & Erholung.';
-        } else if (recovery <= 4) {
-            exMultiplier = 0.6; // -40% Volumen
-            recoveryBanner = '🔴 Recovery Score ' + recovery + '/10 — Volumen stark reduziert. Fokus auf Technik, nicht Last.';
-        } else if (recovery <= 6) {
-            exMultiplier = 0.8; // -20% Volumen
-            recoveryBanner = '⚠️ Recovery Score ' + recovery + '/10 — Volumen leicht reduziert (~20%).';
-        } else if (recovery >= 9) {
-            exMultiplier = 1.25; // +25% Volumen
-            recoveryBanner = '🚀 Recovery Score ' + recovery + '/10 — Maximale Energie! Extra Satz pro Übung. Perfekter PR-Tag!';
-        }
-
-        if (recoveryBanner) coaching = recoveryBanner + (coaching ? '\n' + coaching : '');
-
         const baseExPerGroup = Math.max(2, Math.floor(available / Math.max(1, strengthGroups.length) / 10));
-        const exPerStrengthGroup = Math.max(1, Math.round(baseExPerGroup * exMultiplier));
+        const exPerStrengthGroup = Math.max(1, Math.round(baseExPerGroup));
         const stretchCount = trainingTime < 30 ? 4 : trainingTime < 45 ? 6 : 8;
 
         const labels = {
-            back:'🔙 Rücken', legs:'🦵 Beine',
-            shoulders:'🏔️ Schultern', arms:'💪 Arme',
-            stretching:'🧘 Stretching & Mobilität'
+            back:'🔙 Rücken', legs:'🦵 Beine', chest:'🫁 Brust',
+            shoulders:'🏔️ Schultern', arms:'💪 Arme', stretching:'🧘 Stretching & Mobilität'
         };
 
-        let html = '';
-        if (coaching) html += `<div class="coaching-banner">${coaching}</div>`;
+        const makeSection = (sectionId, title, cardsHtml, collapsed=false) => `
+            <div class="workout-section" id="section-${sectionId}">
+                <div class="section-header" onclick="toggleSection('${sectionId}')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                    <span>${title}</span>
+                    <span id="section-icon-${sectionId}" style="font-size:14px;color:var(--text2);transition:transform 0.2s;">${collapsed?'▶':'▼'}</span>
+                </div>
+                <div id="section-body-${sectionId}" style="display:${collapsed?'none':'block'};">
+                    ${cardsHtml}
+                </div>
+            </div>`;
 
-        html += `<div class="section-header">🔥 Warmup (5 min)</div>`;
-        html += rpExercises.mobility.slice(0,3).map((ex,i) => {
+        let html = '';
+
+        // Meso Banner
+        if (mesoWeekSets) {
+            const { week, isDeload } = mesoWeekSets;
+            const { label, color } = getMesoWeekLabel(week, active.mesoWeeks);
+            html += `<div class="coaching-banner" style="border-left-color:${color};background:${color}15;">
+                📋 Woche ${week} — <strong style="color:${color};">${label}</strong>${isDeload ? ' · 50% Volumen heute' : ''}
+            </div>`;
+        }
+
+        // Warmup (einklappbar, startet offen)
+        const warmupCards = rpExercises.mobility.slice(0,3).map((ex,i) => {
             const exId = `ex_warmup_${i}`;
             const done = (appData.completedExercises[today]||[]).includes(exId);
             return renderExCard(ex, exId, done);
         }).join('');
+        html += makeSection('warmup', '🔥 Warmup (5 min)', warmupCards, false);
 
+        // Kraft-Gruppen
         focusGroups.forEach(group => {
             const exList = rpExercises[group] || [];
             const count = group === 'stretching' ? stretchCount : exPerStrengthGroup;
-            const mins = group === 'stretching' ? Math.round(stretchCount*3) : exPerStrengthGroup*10;
-            const sorted = group === 'stretching' ? exList : [...exList].sort((a,b) => (a.priority||99)-(b.priority||99));
+            const sorted = group === 'stretching' ? exList : [...exList].sort((a,b)=>(a.priority||99)-(b.priority||99));
             const selected = sorted.slice(0, count);
+            let note = '';
+            if (group === 'shoulders') note = '<div style="font-size:12px;color:var(--text2);margin-bottom:8px;">70-80% Fokus auf seitlichen Deltamuskel (RP)</div>';
+            if (group === 'chest') note = '<div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Stretch unter Last priorisieren (Flyes vor Press)</div>';
+            if (mesoWeekSets?.isDeload && group !== 'stretching') note += '<div style="font-size:12px;color:var(--blue);margin-bottom:8px;">🔵 Deload: -40% Gewicht, 50% Sätze — Technik fokus</div>';
 
-            html += `<div class="section-header">${labels[group]} (${mins} min)</div>`;
-            if (group === 'stretching') html += `<div style="font-size:12px;color:var(--text2);margin:-4px 0 10px;">Fokus: Hüfte, Rücken & Beine | Gegen langes Sitzen</div>`;
-            if (group === 'shoulders') html += `<div style="font-size:12px;color:var(--text2);margin:-4px 0 10px;">70-80% Fokus auf seitlichen Deltamuskel (RP Israetel)</div>`;
-
-            selected.forEach((ex,i) => {
+            const cards = selected.map((ex,i) => {
                 const exId = `ex_${group}_${i}`;
                 const done = (appData.completedExercises[today]||[]).includes(exId);
-                html += renderExCard(ex, exId, done, group);
-            });
+                return renderExCard(ex, exId, done, group);
+            }).join('');
+
+            html += makeSection(group, labels[group], note+cards, false);
             if (group !== 'stretching') appData.lastSessionFocus = group;
         });
 
-        html += `<div class="section-header">🧘 Cooldown (5 min)</div>`;
-        html += rpExercises.mobility.map((ex,i) => {
+        // Cooldown (einklappbar, startet eingeklappt)
+        const cooldownCards = rpExercises.mobility.map((ex,i) => {
             const exId = `ex_cool_${i}`;
             const done = (appData.completedExercises[today]||[]).includes(exId);
             return renderExCard(ex, exId, done);
         }).join('');
+        html += makeSection('cooldown', '🧊 Cooldown (5 min)', cooldownCards, true);
 
         const display = document.getElementById('workoutDisplay');
         if (display) display.innerHTML = html;
 
-        const totalEx = focusGroups.reduce((sum,g) => {
-            if (g === 'stretching') return sum + stretchCount;
-            return sum + exPerStrengthGroup;
-        }, 0) + rpExercises.mobility.slice(0,3).length + rpExercises.mobility.length;
-
         if (!appData.workouts) appData.workouts = [];
-        appData.workouts.push({ date:today, timestamp:Date.now(), focus:appData.lastSessionFocus||'mixed', totalExercises:totalEx });
+        appData.workouts.push({ date:today, timestamp:Date.now(), focus:appData.lastSessionFocus||'mixed' });
         localStorage.setItem('workouts', JSON.stringify(appData.workouts));
 
     } catch(e) { console.error('generateWorkout:', e); }
+}
+
+function toggleSection(sectionId) {
+    const body = document.getElementById('section-body-' + sectionId);
+    const icon = document.getElementById('section-icon-' + sectionId);
+    if (!body) return;
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : 'block';
+    if (icon) icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+}
+
+function autoCollapseSection(sectionId) {
+    const body = document.getElementById('section-body-' + sectionId);
+    const icon = document.getElementById('section-icon-' + sectionId);
+    if (body) body.style.display = 'none';
+    if (icon) icon.style.transform = 'rotate(-90deg)';
 }
 
 // ═══════════════════════════════════════════
@@ -3563,18 +3084,18 @@ async function loadCoachFeedback() {
         return `${name}: ${first.weight}kg → ${last.weight}kg (${sessions.length} Sessions, Ø RPE ${avgRpe})`;
     }).join('\n');
 
-    const prompt = `Du bist ein erfahrener Personal Trainer und Kraft-Coach.
+    const prompt = `Du bist ein erfahrener Kraft-Coach und RP Hypertrophy Spezialist.
 
 ${buildAthleteContext()}
 
 TRAININGS-PROGRESSIONEN (bisherige Entwicklung):
-${progressSummary || 'Noch keine ausreichenden Daten'}
+${progressSummary || 'Noch keine ausreichenden Daten — mindestens 2 Sessions pro Übung nötig.'}
 
 Gib konkretes Coaching-Feedback (Deutsch, max 200 Wörter):
-1. Welche Übungen entwickeln sich gut? Warum?
-2. Wo siehst du Stagnation oder Probleme?
-3. Eine konkrete Empfehlung für die nächsten 2 Wochen
-4. Motivierender Abschluss mit Bezug auf das 90kg-Ziel`;
+1. Welche Übungen entwickeln sich gut — RPE Trend und Gewichtssteigerung
+2. Wo siehst du Plateau oder zu hohes RPE → konkreter Tipp
+3. Empfehlung für nächste 2 Wochen basierend auf aktuellem Mesozyklus
+4. Motivierender Abschluss`;
 
     try {
         const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -3618,19 +3139,25 @@ function checkWorkoutComplete() {
         ];
         showToast(msgs[Math.floor(Math.random()*msgs.length)], 'success');
 
-        // Training einklappen nach kurzer Verzögerung
+        // Sections einklappen
+        setTimeout(() => {
+            ['warmup','back','legs','chest','shoulders','arms','stretching','cooldown'].forEach(s => autoCollapseSection(s));
+        }, 800);
+
+        // Abschluss-Card
         setTimeout(() => {
             const display = document.getElementById('workoutDisplay');
             if (!display) return;
-            const completed = doneStrengthCards.length;
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            display.innerHTML = `<div class="card" style="text-align:center;padding:24px;">
+            const summaryCard = `<div class="card" style="text-align:center;padding:24px;background:linear-gradient(135deg,rgba(46,204,113,0.12),rgba(46,204,113,0.04));border-color:rgba(46,204,113,0.3);">
                 <div style="font-size:48px;margin-bottom:12px;">🏆</div>
                 <div style="font-weight:800;font-size:20px;margin-bottom:8px;">Training abgeschlossen!</div>
-                <div style="color:var(--text2);font-size:14px;margin-bottom:16px;">${completed} Übungen · ${timeStr} Uhr</div>
+                <div style="color:var(--text2);font-size:14px;margin-bottom:16px;">${doneStrengthCards.length} Übungen · ${timeStr} Uhr</div>
                 <button onclick="initTrainingScreen()" style="background:rgba(255,107,53,0.12);border:1.5px solid var(--accent);color:var(--accent);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🔄 Neues Training</button>
             </div>`;
+            display.innerHTML = summaryCard + display.innerHTML;
+            display.scrollTop = 0;
         }, 2000);
     }, 500);
 }
@@ -3846,99 +3373,19 @@ function closeSwapModal() {
 // ═══════════════════════════════════════════
 let activityDuration = 60;
 
-const ACTIVITY_CONFIG = {
-    'Schwimmen': { kcalPerMin: 9.2,  affectsGroups: ['shoulders','arms'], emoji: '🏊', suggestion: 'Schwimmen beansprucht Schultern & Arme stark → heute lieber Beine & Rücken.' },
-    'Padel':     { kcalPerMin: 7.5,  affectsGroups: ['shoulders','arms'], emoji: '🎾', suggestion: 'Padel beansprucht Schultern & Arme → heute lieber Beine & Rücken.' },
-    'Tennis':    { kcalPerMin: 8.0,  affectsGroups: ['shoulders','arms'], emoji: '🎾', suggestion: 'Tennis beansprucht Schultern & Arme → heute lieber Beine & Rücken.' },
-    'Spaziergang': { kcalPerMin: 3.5, affectsGroups: [],                  emoji: '🚶', suggestion: 'Spaziergang ist leichte Erholung — kein Einfluss auf dein Krafttraining.' },
-    'Radfahren': { kcalPerMin: 6.5,  affectsGroups: ['legs'],             emoji: '🚴', suggestion: 'Radfahren beansprucht die Beine — heute lieber Oberkörper fokussieren.' },
-};
+;
 
-function getSelectedActivity() {
-    const radios = document.querySelectorAll('input[name="activity"]');
-    for (const r of radios) { if (r.checked && r.value) return r.value; }
-    return '';
-}
 
-function adjustActivityDuration(delta) {
-    activityDuration = Math.max(10, Math.min(180, activityDuration + delta));
-    const el = document.getElementById('activityDurationDisplay');
-    if (el) el.textContent = activityDuration + ' min';
-    updateActivityPreview();
-    // Sync beim Bestätigen der Dauer
-    const activity = getSelectedActivity();
-    if (activity) syncActivityToTracking(activity, activityDuration);
-}
 
-function onActivityChange() {
-    const activity = getSelectedActivity();
-    const config = ACTIVITY_CONFIG[activity];
-    const durationRow = document.getElementById('activityDurationRow');
-    const labelEl = document.getElementById('activityDurationLabel');
 
-    // Update pill styles for radio buttons
-    Object.keys(ACTIVITY_CONFIG).forEach(key => {
-        const pill = document.getElementById('apill-' + key.toLowerCase().substring(0,4));
-    });
-    ['none','swim','padel','tennis','walk','bike'].forEach(id => {
-        const pill = document.getElementById('apill-' + id);
-        const radio = pill?.querySelector('input[type="radio"]');
-        if (pill && radio) pill.classList.toggle('checked', radio.checked);
-    });
 
-    if (activity && config) {
-        if (durationRow) durationRow.style.display = 'block';
-        if (labelEl) labelEl.textContent = `${config.emoji} Minuten`;
 
-        // Auto-adjust focus checkboxes
-        config.affectsGroups.forEach(group => {
-            const cb = document.getElementById('focus' + group.charAt(0).toUpperCase() + group.slice(1));
-            if (cb && cb.checked) {
-                cb.checked = false;
-                const pill = document.getElementById('fpill-' + group);
-                if (pill) pill.classList.remove('checked');
-            }
-        });
 
-        updateActivityPreview();
-        generateWorkout();
 
-        // Sync erst beim Verlassen des Screens — nicht sofort beim Antippen
-        // (wird von adjustActivityDuration aufgerufen wenn Dauer bestätigt)
-    } else {
-        if (durationRow) durationRow.style.display = 'none';
-        // Aktivität aus Tracking entfernen wenn "Keine" gewählt
-        const today = getToday();
-        if (appData.activities?.[today]?.sport) {
-            appData.activities[today].sport = '';
-            localStorage.setItem('activities', JSON.stringify(appData.activities));
-        }
-        generateWorkout();
-    }
-}
 
-function updateActivityPreview() {
-    const activity = getSelectedActivity();
-    const config = ACTIVITY_CONFIG[activity];
-    const el = document.getElementById('activityCaloriePreview');
-    if (!el || !config) return;
-    const kcal = Math.round(config.kcalPerMin * activityDuration);
-    el.innerHTML = `🔥 ca. <strong>${kcal} kcal</strong> verbrannt · ${config.suggestion}`;
-}
 
-function syncActivityToTracking(activity, duration) {
-    try {
-        const today = getToday();
-        if (!appData.activities) appData.activities = {};
-        if (!appData.activities[today]) appData.activities[today] = { steps: 0, hr: 0, sport: '' };
-        appData.activities[today].sport = `${activity} ${duration}min`;
-        localStorage.setItem('activities', JSON.stringify(appData.activities));
-    } catch(e) { console.error('syncActivityToTracking:', e); }
-}
 
-function getOtherSports() {
-    return getSelectedActivity().toLowerCase();
-}
+
 
 function shuffleWorkout() {
     // Mische die Reihenfolge in jeder Gruppe zufällig
@@ -3989,95 +3436,7 @@ function getWeekDates() {
     return dates;
 }
 
-function updateWeeklyView() {
-    try {
-        const dates = getWeekDates();
-        const goals = appData.weeklyGoals;
 
-        // Date range header
-        const rangeEl = document.getElementById('weekDateRange');
-        if (rangeEl) {
-            const fmt = d => new Date(d).toLocaleDateString('de-DE', { day:'numeric', month:'short' });
-            rangeEl.textContent = `${fmt(dates[0])} – ${fmt(dates[6])}`;
-        }
-
-        // Update goal displays
-        ['strength','runs','stretching','zone2'].forEach(key => {
-            const el = document.getElementById('goal' + key.charAt(0).toUpperCase() + key.slice(1));
-            if (el) el.textContent = goals[key];
-        });
-
-        // Calculate actuals this week
-        const weekWorkouts = (appData.workouts || []).filter(w => w && dates.includes(w.date));
-        const weekRuns = (appData.runs || []).filter(r => r && r.completed && dates.includes(r.date));
-        const weekStretchDays = [...new Set(weekWorkouts.filter(w => w.focus === 'stretching').map(w => w.date))].length;
-        const weekStrengthDays = [...new Set(weekWorkouts.filter(w => w.focus && w.focus !== 'stretching').map(w => w.date))].length;
-        const weekZone2 = weekRuns.filter(r => r.avgHr && r.avgHr >= ZONE2_MIN && r.avgHr <= ZONE2_MAX).length;
-
-        const actuals = {
-            strength: weekStrengthDays,
-            runs: weekRuns.length,
-            stretching: weekStretchDays,
-            zone2: weekZone2
-        };
-
-        // Goals display
-        const goalsEl = document.getElementById('weekGoalsDisplay');
-        if (goalsEl) {
-            const goalDefs = [
-                { key: 'strength', icon: '🏋️', label: 'Krafttraining', unit: 'Sessions' },
-                { key: 'runs', icon: '🏃', label: 'Läufe', unit: 'Sessions' },
-                { key: 'zone2', icon: '💚', label: 'Zone 2 Läufe', unit: 'davon' },
-                { key: 'stretching', icon: '🧘', label: 'Stretching', unit: 'Sessions' },
-            ];
-
-            goalsEl.innerHTML = goalDefs.map(g => {
-                const actual = actuals[g.key];
-                const goal = goals[g.key];
-                const pct = Math.min((actual / Math.max(goal, 1)) * 100, 100);
-                const onTrack = actual >= goal;
-                const color = onTrack ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
-                const status = onTrack ? '✅ Ziel erreicht' : pct >= 50 ? '🟡 Auf Kurs' : '🔴 Nachsteuern';
-
-                return `<div class="week-goal-row">
-                  <div class="wg-icon">${g.icon}</div>
-                  <div class="wg-info">
-                    <div class="wg-label">${g.label}</div>
-                    <div class="week-prog-bar"><div class="week-prog-fill" style="width:${pct}%;background:${color};"></div></div>
-                    <div class="wg-status" style="color:${color};font-size:11px;margin-top:4px;">${status}</div>
-                  </div>
-                  <div class="wg-progress">
-                    <div class="wg-frac" style="color:${color};">${actual}<span style="font-size:13px;font-weight:500;color:var(--text2);">/${goal}</span></div>
-                    <div class="wg-status" style="color:var(--text2);">${g.unit}</div>
-                  </div>
-                </div>`;
-            }).join('');
-        }
-
-        // Days overview
-        const daysEl = document.getElementById('weekDaysDisplay');
-        if (daysEl) {
-            const dayNames = ['Mo','Di','Mi','Do','Fr','Sa','So'];
-            const today = getToday();
-
-            daysEl.innerHTML = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;">` +
-                dates.map((date, i) => {
-                    const hasStrength = weekWorkouts.some(w => w.date === date && w.focus !== 'stretching');
-                    const hasRun = weekRuns.some(r => r.date === date);
-                    const hasStretch = weekWorkouts.some(w => w.date === date && w.focus === 'stretching');
-                    const isToday = date === today;
-                    const isEmpty = !hasStrength && !hasRun && !hasStretch;
-                    const bg = isToday ? 'rgba(255,107,53,0.2)' : 'var(--surface2)';
-                    const border = isToday ? '1px solid var(--accent)' : '1px solid var(--border)';
-
-                    return `<div style="background:${bg};border:${border};border-radius:10px;padding:8px 4px;">
-                      <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">${dayNames[i]}</div>
-                      <div style="font-size:14px;line-height:1.4;">${hasStrength ? '🏋️' : ''}${hasRun ? '🏃' : ''}${hasStretch ? '🧘' : ''}${isEmpty ? '·' : ''}</div>
-                    </div>`;
-                }).join('') + '</div>';
-        }
-    } catch(e) { console.error('updateWeeklyView:', e); }
-}
 
 function adjustGoal(key, delta) {
     try {
@@ -4091,58 +3450,7 @@ function adjustGoal(key, delta) {
     } catch(e) { console.error('adjustGoal:', e); }
 }
 
-async function generateWeeklyRecap() {
-    const btn = document.getElementById('recapBtn');
-    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Generiere…'; }
 
-    const dates = getWeekDates();
-    const weekWorkouts = (appData.workouts || []).filter(w => w && dates.includes(w.date));
-    const weekRuns = (appData.runs || []).filter(r => r && r.completed && dates.includes(r.date));
-    const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
-    const weekStrength = [...new Set(weekWorkouts.filter(w => w.focus !== 'stretching').map(w => w.date))].length;
-    const weekZone2 = weekRuns.filter(r => r.avgHr >= ZONE2_MIN && r.avgHr <= ZONE2_MAX).length;
-    const avgHr = weekRuns.length > 0 ? Math.round(weekRuns.reduce((s,r) => s + (r.avgHr||0), 0) / weekRuns.length) : 0;
-
-    const prompt = `Du bist ein erfahrener Personal Trainer und Coach.
-
-${buildAthleteContext()}
-
-DIESE WOCHE KONKRET:
-- Krafttraining: ${weekStrength}/${goals.strength} Sessions
-- Läufe: ${weekRuns.length}/${goals.runs} (Ø HR: ${avgHr||'–'} bpm)
-- Zone 2 Läufe: ${weekZone2}/${goals.zone2}
-- Trainierte Gruppen: ${[...new Set(weekWorkouts.map(w=>w.focus).filter(Boolean))].join(', ')||'keine'}
-
-Wochenrückblick (Deutsch, max 150 Wörter, wie ein direkter Coach):
-1. Konkrete Bewertung dieser Woche — was lief gut, was nicht?
-2. Bezug auf Progressionen — sind die Gewichte gestiegen?
-3. Eine spezifische, umsetzbare Empfehlung für nächste Woche
-4. Motivierender Abschluss mit Bezug auf das 90kg-Ziel`;
-
-    try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-        });
-        const data = await res.json();
-        const text = data.content?.find(b => b.type === 'text')?.text || 'Kein Recap verfügbar.';
-        const el = document.getElementById('recapContent');
-        const box = document.getElementById('recapBox');
-        if (el) el.textContent = text;
-        if (box) box.style.display = 'block';
-    } catch(e) {
-        const el = document.getElementById('recapContent');
-        const box = document.getElementById('recapBox');
-        const onTrack = weekStrength >= goals.strength && weekRuns.length >= goals.runs;
-        if (el) el.textContent = onTrack
-            ? `💪 Starke Woche! ${weekStrength} Krafttraining und ${weekRuns.length} Läufe — du bist voll auf Kurs.`
-            : `📋 ${weekStrength}/${goals.strength} Kraft-Sessions, ${weekRuns.length}/${goals.runs} Läufe. Nächste Woche nachjustieren!`;
-        if (box) box.style.display = 'block';
-    } finally {
-        if (btn) { btn.disabled = false; btn.innerHTML = '✨ Recap generieren'; }
-    }
-}
 
 // ═══════════════════════════════════════════
 // CALISTHENICS
@@ -4385,266 +3693,180 @@ function resetSkillLevel(skillName) {
 // ═══════════════════════════════════════════
 // RUNNING
 // ═══════════════════════════════════════════
-function adjustRunTime(delta) {
-    runTime = Math.max(10, Math.min(120, runTime + delta));
-    const el = document.getElementById('runTimeDisplay');
-    if (el) el.textContent = runTime + ' min';
-}
 
-function updateRunStats() {
-    try {
-        const runs = (appData.runs || []).filter(r => r && r.completed);
-        const el1 = document.getElementById('zone2Display');
-        if (el1) el1.textContent = `${ZONE2_MIN}–${ZONE2_MAX} bpm`;
-        const el2 = document.getElementById('totalRunsDisplay');
-        if (el2) el2.textContent = runs.length;
-        const el3 = document.getElementById('lastHrDisplay');
-        if (el3) {
-            const last = runs.slice(-1)[0];
-            el3.innerHTML = last && last.avgHr ? `${last.avgHr}<span class="stat-unit">bpm</span>` : '–';
-        }
-    } catch(e) { console.error('updateRunStats:', e); }
-}
+
+
 
 // ═══════════════════════════════════════════
 // ZENTRALER ATHLETEN-KONTEXT FÜR ALLE COACHINGS
 // ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// ADD EXERCISE MODAL
+// ═══════════════════════════════════════════
+let addExCurrentFilter = 'all';
+let addedExercises = []; // Extra Übungen die der User hinzugefügt hat
+
+function openAddExerciseModal() {
+    addExCurrentFilter = 'all';
+    renderAddExList();
+    document.getElementById('addExerciseModal').classList.add('show');
+}
+
+function closeAddExerciseModal() {
+    document.getElementById('addExerciseModal').classList.remove('show');
+}
+
+function filterAddEx(group) {
+    addExCurrentFilter = group;
+    // Button Highlight
+    document.querySelectorAll('#addExGroupFilter button').forEach(btn => {
+        btn.classList.remove('checked');
+    });
+    const activeBtn = document.getElementById('addExFilter-' + group);
+    if (activeBtn) activeBtn.classList.add('checked');
+    renderAddExList();
+}
+
+function renderAddExList() {
+    const el = document.getElementById('addExList');
+    if (!el) return;
+
+    const groupLabels = { back:'🔙 Rücken', legs:'🦵 Beine', chest:'🫁 Brust', shoulders:'🏔️ Schultern', arms:'💪 Arme', stretching:'🧘 Stretching', mobility:'🔥 Warmup' };
+    const groups = addExCurrentFilter === 'all'
+        ? ['back','legs','chest','shoulders','arms','stretching']
+        : [addExCurrentFilter];
+
+    el.innerHTML = groups.map(group => {
+        const exercises = rpExercises[group] || [];
+        if (exercises.length === 0) return '';
+        return `
+            <div style="margin-bottom:16px;">
+                <div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">${groupLabels[group]}</div>
+                ${exercises.map(ex => `
+                    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <div style="flex:1;">
+                            <div style="font-weight:700;font-size:13px;">${ex.name}${ex.myorep?'<span class="myorep-badge" style="margin-left:6px;">MYO</span>':''}</div>
+                            ${ex.focus?`<div style="font-size:11px;color:var(--text2);margin-top:2px;">🎯 ${ex.focus}</div>`:''}
+                        </div>
+                        <button onclick="addExerciseToWorkout('${group}',${JSON.stringify(ex.name)})" style="background:rgba(255,107,53,0.12);border:1.5px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;">+ Add</button>
+                    </div>`).join('')}
+            </div>`;
+    }).join('');
+}
+
+function addExerciseToWorkout(group, exName) {
+    const ex = (rpExercises[group] || []).find(e => e.name === exName);
+    if (!ex) return;
+
+    const today = getToday();
+    const existingIds = [...document.querySelectorAll('#workoutDisplay .ex-card')].map(c => c.id.replace('card-',''));
+    const newIdx = existingIds.filter(id => id.startsWith(`ex_${group}_extra_`)).length;
+    const exId = `ex_${group}_extra_${newIdx}`;
+    const done = (appData.completedExercises?.[today] || []).includes(exId);
+
+    // Finde die richtige Section oder erstelle sie
+    let sectionBody = document.getElementById(`section-body-${group}`);
+    if (!sectionBody) {
+        // Section existiert nicht → erstelle sie
+        const display = document.getElementById('workoutDisplay');
+        const groupLabels = { back:'🔙 Rücken', legs:'🦵 Beine', chest:'🫁 Brust', shoulders:'🏔️ Schultern', arms:'💪 Arme', stretching:'🧘 Stretching' };
+        const newSection = document.createElement('div');
+        newSection.className = 'workout-section';
+        newSection.id = `section-${group}`;
+        newSection.innerHTML = `
+            <div class="section-header" onclick="toggleSection('${group}')" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <span>${groupLabels[group] || group}</span>
+                <span id="section-icon-${group}" style="font-size:14px;color:var(--text2);">▼</span>
+            </div>
+            <div id="section-body-${group}"></div>`;
+        // Vor Cooldown einfügen
+        const cooldown = document.getElementById('section-cooldown');
+        if (cooldown) display.insertBefore(newSection, cooldown);
+        else if (display) display.appendChild(newSection);
+        sectionBody = document.getElementById(`section-body-${group}`);
+    }
+
+    // Karte einfügen
+    const div = document.createElement('div');
+    div.innerHTML = renderExCard(ex, exId, done, group);
+    sectionBody.appendChild(div.firstElementChild);
+
+    showToast(`✅ ${ex.name} hinzugefügt!`, 'success');
+}
+
+// ═══════════════════════════════════════════
+// AI COACH — BEREINIGT FÜR v5
+// ═══════════════════════════════════════════
 function buildAthleteContext() {
     try {
         const today = getToday();
+        const now = new Date();
 
-        // Gewicht
-        const weights = (appData.weights || []).sort((a,b) => new Date(a.date)-new Date(b.date));
-        const latestWeight = weights.length > 0 ? weights[weights.length-1].weight : 82;
-        const startWeight = weights.length > 0 ? weights[0].weight : 82;
-        const weightTrend = weights.length > 1 ? (latestWeight - startWeight).toFixed(1) : '0';
-
-        // Recovery & Check-In
-        const todayCheckin = (appData.checkins || {})[today];
-        const recovery = appData.recovery || 7;
-        const sleepHours = todayCheckin?.sleepHours || '–';
-        const sleepQuality = todayCheckin?.sleepQuality || '–';
+        // Aktiver Plan
+        const active = appData.activePlan;
+        let planContext = 'Kein aktiver Plan.';
+        if (active) {
+            const plan = MESO_PLANS.find(p => p.id === active.planId);
+            if (plan) {
+                const daysDiff = Math.floor((now - new Date(active.startDate)) / (1000*60*60*24));
+                const currentWeek = Math.min(Math.floor(daysDiff / 7) + 1, active.mesoWeeks);
+                const { label } = getMesoWeekLabel(currentWeek, active.mesoWeeks);
+                planContext = `${plan.name} | Woche ${currentWeek}/${active.mesoWeeks} (${label})`;
+            }
+        }
 
         // Letzte 7 Tage Training
         const last7 = Array.from({length:7}, (_,i) => {
-            const d = new Date(); d.setDate(d.getDate()-i);
-            return d.toISOString().split('T')[0];
+            const d = new Date(now); d.setDate(d.getDate()-i);
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         });
         const recentWorkouts = (appData.workouts||[]).filter(w => w && last7.includes(w.date));
-        const recentRuns = (appData.runs||[]).filter(r => r && r.completed && last7.includes(r.date));
         const trainedGroups = [...new Set(recentWorkouts.map(w=>w.focus).filter(Boolean))];
+        const weekStrength = [...new Set(recentWorkouts.filter(w=>w.focus&&w.focus!=='stretching').map(w=>w.date))].length;
 
-        // Progressions-Trends (letzte 3 Sessions pro Übung)
+        // Progressions-Trends
         const progHistory = appData.progressionHistory || {};
         const progSummary = Object.entries(progHistory)
-            .filter(([_, sessions]) => sessions.length > 0)
+            .filter(([_, s]) => s.length >= 2)
             .map(([name, sessions]) => {
-                const recent = sessions.slice(-3);
-                const latest = recent[recent.length-1];
-                const prev = recent.length > 1 ? recent[recent.length-2] : null;
+                const lastDate = sessions[sessions.length-1].date;
+                const lastSession = sessions.filter(s => s.date === lastDate);
+                const prev = sessions.filter(s => s.date !== lastDate).slice(-1)[0];
+                const latest = lastSession[lastSession.length-1];
                 const trend = prev ? (latest.weight > prev.weight ? '↑' : latest.weight < prev.weight ? '↓' : '→') : '–';
-                return `${name}: ${latest.weight}kg×${latest.reps} Wdh. RPE ${latest.rpe} ${trend}`;
+                const avgRpe = (lastSession.reduce((s,e)=>s+(e.rpe||7),0)/lastSession.length).toFixed(1);
+                return `${name}: ${latest.weight}kg×${latest.reps}Wdh RPE${avgRpe} ${trend}`;
             })
-            .slice(0, 5) // Max 5 Übungen
+            .slice(0, 6)
             .join('\n');
-
-        // Läufe letzte 4 Sessions
-        const allRuns = (appData.runs||[]).filter(r => r && r.completed && r.distance).slice(-4);
-        const runSummary = allRuns.length > 0
-            ? allRuns.map(r => `${r.date}: ${r.distance}km, ${r.duration}Min, Ø${r.avgHr||'?'}bpm, ${r.pace||'?'}/km, Zone2: ${r.zone2Pct||'?'}%`).join('\n')
-            : 'Noch keine Läufe';
-
-        // Wochenziele
-        const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
-        const weekWorkouts = (appData.workouts||[]).filter(w => w && last7.slice(0,7).includes(w.date));
-        const weekStrength = [...new Set(weekWorkouts.filter(w=>w.focus&&w.focus!=='stretching').map(w=>w.date))].length;
-        const weekRunsDone = recentRuns.length;
-        const weekZone2 = recentRuns.filter(r=>r.avgHr&&r.avgHr>=ZONE2_MIN&&r.avgHr<=ZONE2_MAX).length;
 
         return `
 ATHLETEN-PROFIL:
-- Gewicht: ${latestWeight}kg (Ziel: 90kg, Trend: ${weightTrend >= 0 ? '+' : ''}${weightTrend}kg seit Start)
-- Alter: ${USER_AGE} Jahre, Zone 2: ${ZONE2_MIN}–${ZONE2_MAX} bpm
-- Fokusgruppen: Rücken (V-Shape), Schultern (Seitdeltoid), Beine (Po+Waden), Arme+Unterarme
+- Alter: 31 Jahre, Ziel: Muskelaufbau (Fokus Rücken, Schultern, Beine, Brust, Arme)
+- Equipment: Power Rack, Kabelzug (High/Low/Mitte), Langhantel, Kurzhanteln bis 50kg, Bank
 
-HEUTIGER STATUS:
-- Recovery Score: ${recovery}/10
-- Schlaf: ${sleepHours}h, Qualität: ${sleepQuality}/10
-- Befinden: ${todayCheckin ? [todayCheckin.sleepGood&&'erholt', todayCheckin.energyHigh&&'Energie hoch', todayCheckin.noPain&&'keine Schmerzen', todayCheckin.goodAppetite&&'guter Appetit'].filter(Boolean).join(', ')||'keine Angabe' : 'kein Check-In heute'}
+AKTIVER MESOZYKLUS:
+${planContext}
 
-DIESE WOCHE (${weekStrength}/${goals.strength} Kraft, ${weekRunsDone}/${goals.runs} Läufe, ${weekZone2}/${goals.zone2} Zone 2):
+DIESE WOCHE (${weekStrength} Krafttraining-Tage):
 - Trainierte Gruppen: ${trainedGroups.join(', ')||'noch keine'}
 
-PROGRESSIONEN (letzte Sessions):
-${progSummary||'Noch keine Daten'}
-
-LAUF-HISTORY (letzte 4):
-${runSummary}`;
+PROGRESSIONEN (letzte Sessions pro Übung):
+${progSummary||'Noch keine Progressions-Daten — logge erst ein paar Sessions.'}`;
     } catch(e) {
         return 'Athleten-Kontext nicht verfügbar.';
     }
 }
 
-function buildLastRunSummary() {
-    const runs = (appData.runs || []).filter(r => r && r.completed && r.distance);
-    if (runs.length === 0) return 'Noch kein Lauf gespeichert.';
-    const l = runs[runs.length - 1];
-    return `Letzter Lauf: ${l.distance}km in ${l.duration} Min | Ø ${l.avgHr} bpm | ${l.pace} min/km | Zone 2: ${l.zone2Pct || '?'}%`;
-}
 
-async function getPreRunBriefing() {
-    const btn = document.getElementById('preRunBtn');
-    const feeling = document.getElementById('preRunFeeling')?.value || 'good';
-    const notes = document.getElementById('preRunNotes')?.value || '';
-    const feelingMap = { great: 'Super – volle Energie', good: 'Gut – normal', tired: 'Müde', bad: 'Schwere Beine' };
 
-    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Coach denkt…'; }
 
-    const prompt = `Du bist ein professioneller Laufcoach, spezialisiert auf Zone 2 Training und Ausdaueraufbau.
 
-${buildAthleteContext()}
 
-HEUTE:
-- Gefühl vor dem Lauf: ${feelingMap[feeling]}
-- Geplante Zeit: ${runTime} Min
-- Notizen: ${notes || 'keine'}
 
-Erstelle ein präzises Pre-Run Briefing (Deutsch, max 180 Wörter):
-1. Empfohlenes Starttempo (min/km) — basierend auf letzten Läufen und heutigem Gefühl
-2. Herzfrequenz-Ziel heute (konkrete bpm-Spanne)
-3. Trainingsstruktur: Aufwärmen / Hauptteil / Abkühlen mit Minuten
-4. Ein konkreter Tipp basierend auf dem letzten Lauf
-5. Falls Recovery niedrig (<6): Anpassung empfehlen`;
 
-    try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-        });
-        const data = await res.json();
-        const text = data.content?.find(b => b.type === 'text')?.text || 'Keine Antwort.';
-        const el = document.getElementById('preRunResult');
-        if (el) { el.textContent = text; el.classList.add('show'); }
-        const startBtn = document.getElementById('runStartedBtn');
-        if (startBtn) startBtn.style.display = 'block';
-    } catch(e) {
-        const el = document.getElementById('preRunResult');
-        if (el) { el.textContent = `Offline-Plan:\n\nZiel: Puls ${ZONE2_MIN}–${ZONE2_MAX} bpm\nTempo: Langsam – du solltest dich unterhalten können\nStruktur: 5 min Gehen → ${Math.max(10, runTime - 10)} min Laufen Zone 2 → 5 min Gehen\nTipp: Sobald Puls über ${ZONE2_MAX} steigt → Gehen!`; el.classList.add('show'); }
-    } finally {
-        if (btn) { btn.disabled = false; btn.innerHTML = '🏃 Briefing starten'; }
-    }
-}
 
-function markRunStarted() {
-    const runs = appData.runs || [];
-    if (runs.length > 0) { runs[runs.length - 1].started = true; localStorage.setItem('runs', JSON.stringify(runs)); }
-    showToast('🏁 Viel Erfolg! Bleib in Zone 2! 💚', 'success');
-    const btn = document.getElementById('runStartedBtn');
-    if (btn) btn.style.display = 'none';
-}
 
-function saveRun(complete = false) {
-    try {
-        const date = document.getElementById('runDate')?.value || getToday();
-        const distance = parseFloat(document.getElementById('runDistance')?.value) || 0;
-        const duration = parseInt(document.getElementById('runDuration')?.value) || 0;
-        const pace = document.getElementById('runPace')?.value || '';
-        const avgHr = parseInt(document.getElementById('runAvgHr')?.value) || 0;
-        const maxHr = parseInt(document.getElementById('runMaxHr')?.value) || 0;
-        const zone2Pct = parseInt(document.getElementById('runZone2Pct')?.value) || 0;
-        const notes = document.getElementById('runNotes')?.value || '';
-
-        if (!distance || !duration) { showToast('Bitte Distanz & Dauer eingeben', 'error'); return; }
-        if (!appData.runs) appData.runs = [];
-
-        const runData = { id: Date.now(), date, distance, duration, pace, avgHr, maxHr, zone2Pct, notes, completed: complete, savedAt: Date.now() };
-        const todayIdx = appData.runs.findIndex(r => r.date === date && !r.distance);
-        if (todayIdx !== -1) appData.runs[todayIdx] = { ...appData.runs[todayIdx], ...runData };
-        else appData.runs.push(runData);
-
-        localStorage.setItem('runs', JSON.stringify(appData.runs));
-        updateRunStats();
-        renderRunHistory();
-        showToast(complete ? '✅ Lauf abgeschlossen!' : '💾 Lauf gespeichert!', 'success');
-    } catch(e) { console.error('saveRun:', e); showToast('Fehler beim Speichern', 'error'); }
-}
-
-async function getPostRunAnalysis() {
-    const btn = document.getElementById('postRunBtn');
-    const runs = (appData.runs || []).filter(r => r && r.completed && r.distance);
-    if (runs.length === 0) { showToast('Bitte zuerst einen Lauf speichern', 'error'); return; }
-
-    const last = runs[runs.length - 1];
-    const prev = runs.length > 1 ? runs[runs.length - 2] : null;
-
-    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Analysiere…'; }
-
-    const prompt = `Du bist ein professioneller Laufcoach, spezialisiert auf Zone 2 Training.
-
-${buildAthleteContext()}
-
-AKTUELLER LAUF:
-- Distanz: ${last.distance}km in ${last.duration} Min
-- Ø HR: ${last.avgHr} bpm (Zone 2: ${ZONE2_MIN}–${ZONE2_MAX})
-- Max HR: ${last.maxHr} bpm
-- Tempo: ${last.pace} min/km
-- Zone 2 Anteil: ${last.zone2Pct}%
-- Notizen: ${last.notes || 'keine'}
-
-Post-Run Analyse (Deutsch, max 200 Wörter):
-1. Zone 2 Bewertung (✅/⚠️/❌) mit konkreter Begründung
-2. Was war gut — mit Bezug auf Verbesserung gegenüber letztem Lauf
-3. Was konkret verbessern — spezifischer Tipp
-4. Nächster Lauf: Empfohlenes Tempo, Distanz, Puls-Ziel — basierend auf Trend
-5. Bezug auf Recovery (${appData.recovery}/10) wenn relevant`;
-
-    try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-        });
-        const data = await res.json();
-        const text = data.content?.find(b => b.type === 'text')?.text || 'Keine Antwort.';
-        const el = document.getElementById('postRunResult');
-        if (el) { el.textContent = text; el.classList.add('show'); }
-    } catch(e) {
-        const inZ2 = last.avgHr >= ZONE2_MIN && last.avgHr <= ZONE2_MAX;
-        const tooHigh = last.avgHr > ZONE2_MAX;
-        const el = document.getElementById('postRunResult');
-        if (el) {
-            el.textContent = `📊 Offline-Analyse:\n\nZone 2: ${inZ2 ? '✅ Perfekt!' : tooHigh ? '⚠️ Zu hoch – nächstes Mal langsamer starten' : '⬇️ Unter Zone 2'}\nØ Puls: ${last.avgHr} bpm (Ziel: ${ZONE2_MIN}–${ZONE2_MAX})\n\n${tooHigh ? `Nächstes Mal: 30-60 sek langsamer pro km, Geh-Pausen wenn Puls über ${ZONE2_MAX}` : 'Gut gemacht! Halte dieses Tempo.'}`;
-            el.classList.add('show');
-        }
-    } finally {
-        if (btn) { btn.disabled = false; btn.innerHTML = '🔍 Lauf analysieren'; }
-    }
-}
-
-function renderRunHistory() {
-    try {
-        const el = document.getElementById('runHistoryDisplay');
-        if (!el) return;
-        const runs = (appData.runs || []).filter(r => r && r.distance).sort((a, b) => new Date(b.date) - new Date(a.date));
-        if (runs.length === 0) { el.innerHTML = '<div class="empty-card"><div class="empty-emoji">🏃</div><div class="empty-text">Noch keine Läufe</div></div>'; return; }
-
-        el.innerHTML = runs.slice(0, 10).map(r => {
-            const inZ2 = r.avgHr >= ZONE2_MIN && r.avgHr <= ZONE2_MAX;
-            const tooHigh = r.avgHr > ZONE2_MAX;
-            const dotColor = !r.avgHr ? 'var(--text2)' : inZ2 ? 'var(--success)' : tooHigh ? 'var(--danger)' : 'var(--warning)';
-            const hrText = r.avgHr ? `Ø ${r.avgHr} bpm` : '';
-            return `<div class="run-item">
-              <div class="run-dot" style="background:${dotColor};"></div>
-              <div class="run-info">
-                <div class="run-name">${new Date(r.date).toLocaleDateString('de-DE')} ${r.completed ? '✅' : '⏳'}</div>
-                <div class="run-detail">${r.distance}km · ${r.duration} Min${r.pace ? ' · ' + r.pace + '/km' : ''}</div>
-              </div>
-              <div class="run-hr" style="color:${dotColor}">${hrText}</div>
-            </div>`;
-        }).join('');
-    } catch(e) { console.error('renderRunHistory:', e); }
-}
 
 // ═══════════════════════════════════════════
 // TRACKING
@@ -4660,52 +3882,11 @@ function stepField(id, delta) {
     } catch(e) { console.error('stepField:', e); }
 }
 
-function addWeight() {
-    try {
-        const el = document.getElementById('weightInput');
-        const dateEl = document.getElementById('weightDate');
-        if (!el || !dateEl) return;
-        const weight = parseFloat(el.value);
-        const date = dateEl.value || getToday();
-        if (!weight || isNaN(weight)) { showToast('Bitte Gewicht eingeben', 'error'); return; }
-        if (!appData.weights) appData.weights = [];
-        appData.weights.push({ weight, date, timestamp: Date.now() });
-        localStorage.setItem('weights', JSON.stringify(appData.weights));
-        updateWeightHistory();
-        showToast('✅ Gewicht gespeichert!', 'success');
-    } catch(e) { console.error('addWeight:', e); }
-}
 
-function updateWeightHistory() {
-    try {
-        const el = document.getElementById('weightHistory');
-        if (!el) return;
-        const sorted = [...(appData.weights || [])].sort((a, b) => new Date(b.date) - new Date(a.date));
-        if (sorted.length === 0) { el.innerHTML = '<div class="empty-card"><div class="empty-text">Noch kein Gewicht eingetragen</div></div>'; return; }
-        el.innerHTML = sorted.slice(0, 10).map((e, i) => {
-            const diff = i < sorted.length - 1 ? (e.weight - sorted[i + 1].weight).toFixed(1) : null;
-            const diffColor = diff > 0 ? 'var(--success)' : diff < 0 ? 'var(--danger)' : 'var(--text2)';
-            return `<div class="weight-item">
-              <div><div class="weight-val">${e.weight.toFixed(1)} kg</div><div class="weight-date">${new Date(e.date).toLocaleDateString('de-DE')}</div></div>
-              ${diff !== null ? `<div class="weight-diff" style="color:${diffColor}">${diff > 0 ? '+' : ''}${diff} kg</div>` : ''}
-            </div>`;
-        }).join('');
-    } catch(e) { console.error('updateWeightHistory:', e); }
-}
 
-function saveActivity() {
-    try {
-        const today = getToday();
-        if (!appData.activities) appData.activities = {};
-        appData.activities[today] = {
-            steps: parseInt(document.getElementById('stepsInput')?.value) || 0,
-            hr: parseInt(document.getElementById('hrInput')?.value) || 0,
-            sport: document.getElementById('otherSportInput')?.value || '',
-        };
-        localStorage.setItem('activities', JSON.stringify(appData.activities));
-        showToast('✅ Aktivität gespeichert!', 'success');
-    } catch(e) { console.error('saveActivity:', e); }
-}
+
+
+
 
 // ═══════════════════════════════════════════
 // UTILITIES
@@ -4763,7 +3944,7 @@ function calcTodayCalorieTarget() {
     const todayWorkouts = (appData.workouts||[]).filter(w => w && w.date === today);
     const completedToday = (appData.completedExercises&&appData.completedExercises[today]) ? appData.completedExercises[today].length : 0;
     if (todayWorkouts.length > 0 && completedToday > 0) extra += Math.round(completedToday * 40 + 150);
-    const todayRuns = (appData.runs||[]).filter(r => r && r.date === today && r.completed && r.distance);
+    const todayRuns = [];
     todayRuns.forEach(r => { extra += Math.round(8 * 82 * ((r.duration||30)/60)); });
     const act = appData.activities && appData.activities[today];
     if (act && act.sport) {
@@ -5227,191 +4408,321 @@ function renderSavedRecipes() {
     } catch(e) { console.error('renderSavedRecipes:', e); }
 }
 
-function generateShoppingList() {
-    try {
-        const el = document.getElementById('shoppingListDisplay');
-        if (!el) return;
-        const recipes = appData.savedRecipes || [];
-        if (recipes.length === 0) {
-            el.innerHTML = '<div style="color:var(--text2);font-size:13px;text-align:center;padding:16px;">Speichere zuerst Rezepte</div>';
-            return;
-        }
 
-        // Sammle alle Zutaten
-        const itemMap = {};
-        recipes.forEach(recipe => {
-            (recipe.ingredients || []).forEach(ing => {
-                const key = ing.item.toLowerCase();
-                if (!itemMap[key]) itemMap[key] = { item: ing.item, amounts: [] };
-                itemMap[key].amounts.push(`${recipe.portions}× ${ing.amount}`);
-            });
-        });
 
-        // Gruppiere nach Kategorie
-        const cats = {
-            '🥩 Protein': ['hähnchen','lachs','thunfisch','rinderhack','eier','tofu','skyr','joghurt'],
-            '🌾 Kohlenhydrate': ['reis','kartoffel','süßkartoffel','hafer','haferflocken','pasta','nudeln'],
-            '🥦 Gemüse': ['brokkoli','karotten','zwiebel','tomaten','spinat','paprika','zucchini'],
-            '🫘 Hülsenfrüchte': ['kichererbsen','bohnen','erbsen','linsen'],
-            '🧴 Sonstiges': []
-        };
 
-        const categorized = {};
-        Object.keys(cats).forEach(cat => categorized[cat] = []);
 
-        Object.values(itemMap).forEach(({ item, amounts }) => {
-            const lower = item.toLowerCase();
-            let found = false;
-            for (const [cat, keywords] of Object.entries(cats)) {
-                if (keywords.some(k => lower.includes(k))) {
-                    categorized[cat].push({ item, amounts });
-                    found = true;
-                    break;
-                }
+
+
+
+
+// ═══════════════════════════════════════════
+// MESOZYKLUS PLÄNE
+// ═══════════════════════════════════════════
+
+const MESO_PLANS = [
+    {
+        id: 'legs_focus',
+        name: 'Beine — Gluteus & Quads & Waden',
+        emoji: '🦵',
+        description: '3 Tage/Woche Fokus auf Sprinterpo, Quads und Waden-Aufbau',
+        daysPerWeek: 3,
+        mesoWeeks: 4,
+        color: 'var(--success)',
+        sessions: [
+            {
+                name: 'Tag A — Quad & Glutes',
+                groups: ['legs'],
+                exercises: ['Barbell Back Squat (Deep)', 'Sissy Squat', 'Bulgarian Split Squat', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
+                sets_mev: [3,2,2,3,2], sets_mrv: [5,4,4,5,4]
+            },
+            {
+                name: 'Tag B — Hamstring & Glutes',
+                groups: ['legs'],
+                exercises: ['Romanian Deadlift', 'Nordic Hamstring Curl (Band Assisted)', 'Cable Pull-Through', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
+                sets_mev: [3,3,2,3,2], sets_mrv: [5,5,3,5,4]
+            },
+            {
+                name: 'Tag C — Quad & Waden Fokus',
+                groups: ['legs'],
+                exercises: ['Bulgarian Split Squat', 'Sissy Squat', 'Cable Pull-Through', 'Standing Calf Raise (Barbell)', 'Donkey Calf Raise (Dumbbell)'],
+                sets_mev: [3,2,2,4,3], sets_mrv: [5,4,3,6,5]
             }
-            if (!found) categorized['🧴 Sonstiges'].push({ item, amounts });
-        });
-
-        el.innerHTML = Object.entries(categorized)
-            .filter(([_, items]) => items.length > 0)
-            .map(([cat, items]) => `
-                <div style="margin-bottom:16px;">
-                    <div style="font-weight:700;font-size:13px;margin-bottom:8px;">${cat}</div>
-                    ${items.map(({ item, amounts }) => `
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
-                            <span style="font-size:14px;font-weight:600;">${item}</span>
-                            <span style="font-size:11px;color:var(--text2);">${amounts.join(' + ')}</span>
-                        </div>`).join('')}
-                </div>`).join('') +
-            `<div style="margin-top:16px;padding:12px;background:rgba(255,107,53,0.08);border-radius:8px;font-size:12px;color:var(--text2);">
-                Basierend auf ${recipes.length} gespeicherten Rezept${recipes.length !== 1 ? 'en' : ''}
-            </div>`;
-    } catch(e) { console.error('generateShoppingList:', e); }
-}
-
-function toggleWeeklyCollapse() {
-    const content = document.getElementById('weeklyCollapsed');
-    const icon = document.getElementById('weeklyCollapseIcon');
-    if (!content) return;
-    const isOpen = content.style.display !== 'none';
-    content.style.display = isOpen ? 'none' : 'block';
-    if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-    if (!isOpen) updateHomeWeekly();
-}
-
-function updateHomeWeekly() {
-    try {
-        const dates = getWeekDates();
-        const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
-
-        // Stepper-Displays mit gespeicherten Werten befüllen
-        ['strength','runs','stretching','zone2'].forEach(key => {
-            const capKey = key.charAt(0).toUpperCase() + key.slice(1);
-            const el = document.getElementById('goal' + capKey);
-            if (el) el.textContent = goals[key];
-        });
-        const weekWorkouts = (appData.workouts||[]).filter(w => w && dates.includes(w.date));
-        const weekRuns = (appData.runs||[]).filter(r => r && r.completed && dates.includes(r.date));
-        const weekStretchDays = [...new Set(weekWorkouts.filter(w => w.focus==='stretching').map(w=>w.date))].length;
-        const weekStrengthDays = [...new Set(weekWorkouts.filter(w => w.focus && w.focus!=='stretching').map(w=>w.date))].length;
-        const weekZone2 = weekRuns.filter(r => r.avgHr && r.avgHr>=ZONE2_MIN && r.avgHr<=ZONE2_MAX).length;
-        const actuals = { strength:weekStrengthDays, runs:weekRuns.length, stretching:weekStretchDays, zone2:weekZone2 };
-
-        const goalsEl = document.getElementById('homeWeekGoals');
-        if (goalsEl) {
-            const defs = [
-                { key:'strength', icon:'🏋️', label:'Krafttraining' },
-                { key:'runs', icon:'🏃', label:'Läufe' },
-                { key:'zone2', icon:'💚', label:'Zone 2' },
-                { key:'stretching', icon:'🧘', label:'Stretching' },
-            ];
-            goalsEl.innerHTML = defs.map(g => {
-                const actual = actuals[g.key], goal = goals[g.key];
-                const pct = Math.min((actual/Math.max(goal,1))*100, 100);
-                const color = actual>=goal ? 'var(--success)' : pct>=50 ? 'var(--warning)' : 'var(--danger)';
-                return `<div style="display:flex;align-items:center;gap:10px;padding:6px 0;">
-                    <span style="font-size:16px;">${g.icon}</span>
-                    <div style="flex:1;">
-                        <div style="display:flex;justify-content:space-between;margin-bottom:3px;">
-                            <span style="font-size:13px;font-weight:600;">${g.label}</span>
-                            <span style="font-size:13px;font-weight:700;color:${color};">${actual}/${goal}</span>
-                        </div>
-                        <div class="prog-bar" style="height:5px;"><div class="prog-fill" style="width:${pct}%;background:${color};"></div></div>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        // Tage-Übersicht kompakt
-        const daysEl = document.getElementById('homeWeekDays');
-        if (daysEl) {
-            const dayNames = ['Mo','Di','Mi','Do','Fr','Sa','So'];
-            const today = getToday();
-            daysEl.innerHTML = `<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">` +
-                dates.map((date, i) => {
-                    const hasStrength = weekWorkouts.some(w => w.date===date && w.focus!=='stretching');
-                    const hasRun = weekRuns.some(r => r.date===date);
-                    const hasStretch = weekWorkouts.some(w => w.date===date && w.focus==='stretching');
-                    const isToday = date === today;
-                    const bg = isToday ? 'rgba(255,107,53,0.2)' : 'var(--surface2)';
-                    const border = isToday ? '1px solid var(--accent)' : '1px solid var(--border)';
-                    const icons = `${hasStrength?'🏋️':''}${hasRun?'🏃':''}${hasStretch?'🧘':''}` || '·';
-                    return `<div style="background:${bg};border:${border};border-radius:8px;padding:6px 2px;text-align:center;">
-                        <div style="font-size:10px;font-weight:700;color:var(--text2);">${dayNames[i]}</div>
-                        <div style="font-size:12px;margin-top:3px;">${icons}</div>
-                    </div>`;
-                }).join('') + '</div>';
-        }
-
-        // Recap Buttons umleiten
-        const recapBtn = document.getElementById('homeRecapBtn');
-        if (recapBtn) recapBtn.onclick = () => generateHomeRecap();
-    } catch(e) { console.error('updateHomeWeekly:', e); }
-}
-
-async function generateHomeRecap() {
-    const btn = document.getElementById('homeRecapBtn');
-    const box = document.getElementById('homeRecapBox');
-    const content = document.getElementById('homeRecapContent');
-    if (btn) { btn.disabled=true; btn.innerHTML='<span class="spinner"></span>'; }
-
-    const dates = getWeekDates();
-    const goals = appData.weeklyGoals || { strength:4, runs:3, stretching:5, zone2:2 };
-    const weekWorkouts = (appData.workouts||[]).filter(w => w && dates.includes(w.date));
-    const weekRuns = (appData.runs||[]).filter(r => r && r.completed && dates.includes(r.date));
-    const weekStrength = [...new Set(weekWorkouts.filter(w=>w.focus!=='stretching').map(w=>w.date))].length;
-    const weekZone2 = weekRuns.filter(r=>r.avgHr>=ZONE2_MIN&&r.avgHr<=ZONE2_MAX).length;
-
-    const prompt = `Du bist ein direkter Personal Trainer.
-
-${buildAthleteContext()}
-
-DIESE WOCHE:
-Krafttraining: ${weekStrength}/${goals.strength} | Läufe: ${weekRuns.length}/${goals.runs} | Zone 2: ${weekZone2}/${goals.zone2}
-
-Wochenrückblick (Deutsch, max 100 Wörter, direkt und motivierend):
-- Was konkret gut lief
-- Eine spezifische Empfehlung für nächste Woche
-- Bezug auf 90kg-Ziel`;
-
-    try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:300, messages:[{role:'user',content:prompt}] })
-        });
-        const data = await res.json();
-        const text = data.content?.find(b=>b.type==='text')?.text || '';
-        if (content) content.textContent = text;
-        if (box) box.style.display = 'block';
-    } catch(e) {
-        const onTrack = weekStrength>=goals.strength && weekRuns.length>=goals.runs;
-        if (content) content.textContent = onTrack ? '💪 Starke Woche! Du bist voll auf Kurs.' : `📋 ${weekStrength}/${goals.strength} Kraft, ${weekRuns.length}/${goals.runs} Läufe. Bleib dran!`;
-        if (box) box.style.display = 'block';
-    } finally {
-        if (btn) { btn.disabled=false; btn.innerHTML='✨ Wochenrückblick'; }
+        ]
+    },
+    {
+        id: 'back_shoulders',
+        name: 'Rücken & Schultern',
+        emoji: '🔙',
+        description: '3 Tage/Woche V-Shape Aufbau + seitliche Delts Volumen',
+        daysPerWeek: 3,
+        mesoWeeks: 4,
+        color: 'var(--accent)',
+        sessions: [
+            {
+                name: 'Tag A — Rücken Breite',
+                groups: ['back', 'shoulders'],
+                exercises: ['Weighted Pull-ups', 'Cable Straight-Arm Pulldown', 'Cable Lateral Raise (Low)', 'Incline Dumbbell Lateral Raise', 'Cable Face Pull (Rope)'],
+                sets_mev: [3,3,4,3,2], sets_mrv: [5,4,6,5,3]
+            },
+            {
+                name: 'Tag B — Rücken Dicke + Schultern',
+                groups: ['back', 'shoulders'],
+                exercises: ['Seated Cable Row (Beinablage)', 'Single-Arm Dumbbell Row', 'Seated Dumbbell Overhead Press', 'Cable Lateral Raise (Low)', 'Kabel Hinterer Deltoid Fly (Cross-Body)'],
+                sets_mev: [3,3,3,4,3], sets_mrv: [5,4,5,6,4]
+            },
+            {
+                name: 'Tag C — Spinal Erectors + Schultern',
+                groups: ['back', 'shoulders'],
+                exercises: ['Good Morning (Barbell)', 'Cable Pull-Through', 'Barbell Upright Row', 'Incline Dumbbell Lateral Raise', 'Cable Front Raise (Behind Body)'],
+                sets_mev: [3,3,3,3,2], sets_mrv: [4,4,4,5,3]
+            }
+        ]
+    },
+    {
+        id: 'chest_arms',
+        name: 'Brust & Arme',
+        emoji: '🫁',
+        description: '3 Tage/Woche Brust, Bizeps, Trizeps und Unterarme',
+        daysPerWeek: 3,
+        mesoWeeks: 4,
+        color: 'var(--blue)',
+        sessions: [
+            {
+                name: 'Tag A — Brust + Trizeps',
+                groups: ['chest', 'arms'],
+                exercises: ['Dumbbell Flyes (Flachbank)', 'Incline Dumbbell Press', 'Overhead Cable Triceps Extension', 'Cable Triceps Pushdown (Rope)'],
+                sets_mev: [3,3,3,2], sets_mrv: [5,5,5,4]
+            },
+            {
+                name: 'Tag B — Bizeps + Unterarme',
+                groups: ['arms'],
+                exercises: ['Incline Dumbbell Curl', 'Barbell Curl', 'Hammer Curl', 'Reverse Barbell Curl', 'Barbell Wrist Curl'],
+                sets_mev: [3,3,2,2,2], sets_mrv: [5,4,4,3,3]
+            },
+            {
+                name: 'Tag C — Brust + Arme',
+                groups: ['chest', 'arms'],
+                exercises: ['Cable Crossover (Low to High)', 'Cable Fly (mittlere Höhe)', 'Incline Dumbbell Curl', 'Overhead Cable Triceps Extension'],
+                sets_mev: [3,3,3,3], sets_mrv: [5,5,5,5]
+            }
+        ]
     }
+];
+
+let currentPlanDetailId = null;
+let planDetailMesoWeeks = 4;
+let planDetailDaysPerWeek = 3;
+
+function getMesoWeekLabel(weekNum, totalMesoWeeks) {
+    if (weekNum === totalMesoWeeks) return { label: 'Deload', color: 'var(--blue)', pct: 0.5 };
+    const pct = (weekNum / (totalMesoWeeks - 1));
+    if (pct <= 0.25) return { label: 'MEV', color: 'var(--success)', pct: 0.6 };
+    if (pct <= 0.5)  return { label: 'Aufbau', color: 'var(--warning)', pct: 0.75 };
+    if (pct <= 0.75) return { label: 'Peak', color: 'var(--accent)', pct: 0.9 };
+    return { label: 'MRV', color: 'var(--danger)', pct: 1.0 };
 }
+
+function getSetsForWeek(session, weekNum, totalMesoWeeks) {
+    if (weekNum === totalMesoWeeks) {
+        return session.sets_mev.map(s => Math.max(1, Math.round(s * 0.5)));
+    }
+    const { pct } = getMesoWeekLabel(weekNum, totalMesoWeeks);
+    return session.sets_mev.map((mev, i) => {
+        const mrv = session.sets_mrv[i];
+        return Math.round(mev + (mrv - mev) * pct);
+    });
+}
+
+// ── Plan Management ──
+function initPlansScreen() {
+    renderActivePlanCard();
+    renderAvailablePlans();
+}
+
+function renderActivePlanCard() {
+    const el = document.getElementById('activePlanCard');
+    if (!el) return;
+    const active = appData.activePlan;
+    if (!active) {
+        el.innerHTML = `<div class="card" style="text-align:center;padding:24px;border:2px dashed var(--border);">
+            <div style="font-size:32px;margin-bottom:8px;">📋</div>
+            <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Kein aktiver Plan</div>
+            <div style="color:var(--text2);font-size:13px;">Wähle einen Plan aus den verfügbaren Plänen</div>
+        </div>`;
+        return;
+    }
+    const plan = MESO_PLANS.find(p => p.id === active.planId);
+    if (!plan) return;
+    const startDate = new Date(active.startDate);
+    const today = new Date();
+    const daysDiff = Math.floor((today - startDate) / (1000*60*60*24));
+    const currentWeek = Math.min(Math.floor(daysDiff / 7) + 1, active.mesoWeeks);
+    const { label, color } = getMesoWeekLabel(currentWeek, active.mesoWeeks);
+    const progress = Math.round((currentWeek / active.mesoWeeks) * 100);
+
+    el.innerHTML = `<div class="card" style="background:linear-gradient(135deg,rgba(255,107,53,0.1),rgba(255,215,0,0.05));border-color:rgba(255,107,53,0.3);margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+            <div>
+                <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Aktiver Plan</div>
+                <div style="font-size:18px;font-weight:800;">${plan.emoji} ${plan.name}</div>
+            </div>
+            <span style="background:${color};color:#fff;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800;">${label}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px;">
+            <span style="color:var(--text2);">Woche ${currentWeek} von ${active.mesoWeeks}</span>
+            <span style="font-weight:700;color:${color};">${progress}%</span>
+        </div>
+        <div class="prog-bar" style="height:8px;margin-bottom:14px;">
+            <div class="prog-fill" style="width:${progress}%;background:${color};"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
+            ${plan.sessions.map((s,i) => `<div style="background:var(--surface2);border-radius:8px;padding:8px;text-align:center;font-size:12px;font-weight:600;">${s.name.split('—')[0].trim()}</div>`).join('')}
+        </div>
+        <div style="display:flex;gap:8px;">
+            <button onclick="goTo('training')" class="btn-primary" style="flex:1;margin:0;">🏋️ Training starten</button>
+            <button onclick="openPlanDetail('${plan.id}')" style="padding:10px 14px;background:none;border:1.5px solid var(--border);color:var(--text2);border-radius:10px;font-size:13px;cursor:pointer;">⚙️</button>
+        </div>
+    </div>`;
+}
+
+function renderAvailablePlans() {
+    const el = document.getElementById('availablePlansDisplay');
+    if (!el) return;
+    const activeId = appData.activePlan?.planId;
+    el.innerHTML = MESO_PLANS.map(plan => `
+        <div class="card" style="margin-bottom:10px;${activeId===plan.id?'border-color:'+plan.color+';':''}" onclick="openPlanDetail('${plan.id}')">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:48px;height:48px;border-radius:14px;background:${plan.color}22;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">${plan.emoji}</div>
+                <div style="flex:1;">
+                    <div style="font-weight:800;font-size:15px;">${plan.name}</div>
+                    <div style="font-size:12px;color:var(--text2);margin-top:2px;">${plan.description}</div>
+                    <div style="font-size:11px;margin-top:4px;color:${plan.color};font-weight:700;">${plan.daysPerWeek} Tage/Woche · ${plan.sessions.length} Sessions</div>
+                </div>
+                ${activeId===plan.id ? '<span style="font-size:11px;font-weight:800;color:var(--success);">✅ AKTIV</span>' : '<span style="font-size:18px;color:var(--text2);">›</span>'}
+            </div>
+        </div>`).join('');
+}
+
+function openPlanDetail(planId) {
+    currentPlanDetailId = planId;
+    const plan = MESO_PLANS.find(p => p.id === planId);
+    if (!plan) return;
+
+    planDetailMesoWeeks = appData.activePlan?.planId === planId ? appData.activePlan.mesoWeeks : plan.mesoWeeks;
+    planDetailDaysPerWeek = plan.daysPerWeek;
+
+    const nameEl = document.getElementById('planDetailName');
+    const subEl = document.getElementById('planDetailSub');
+    if (nameEl) nameEl.textContent = `${plan.emoji} ${plan.name}`;
+    if (subEl) subEl.textContent = plan.description;
+
+    renderMesoLengthPicker();
+    renderPlanWeeks(plan);
+
+    const btn = document.getElementById('activatePlanBtn');
+    const isActive = appData.activePlan?.planId === planId;
+    if (btn) btn.textContent = isActive ? '🔄 Plan neu starten' : '✅ Plan aktivieren';
+
+    document.getElementById('planDetailModal').classList.add('show');
+}
+
+function closePlanDetail() {
+    document.getElementById('planDetailModal').classList.remove('show');
+}
+
+function renderMesoLengthPicker() {
+    const el = document.getElementById('mesoLengthPicker');
+    if (!el) return;
+    const options = [3,4,5,6,8];
+    el.innerHTML = options.map(w => `
+        <button onclick="setPlanMesoWeeks(${w})" style="padding:8px 14px;border-radius:20px;border:2px solid ${w===planDetailMesoWeeks?'var(--accent)':'var(--border)'};background:${w===planDetailMesoWeeks?'rgba(255,107,53,0.15)':'none'};color:${w===planDetailMesoWeeks?'var(--accent)':'var(--text2)'};font-size:13px;font-weight:700;cursor:pointer;">
+            ${w} Wo${w===planDetailMesoWeeks?' ✓':''}
+        </button>`).join('');
+}
+
+function setPlanMesoWeeks(weeks) {
+    planDetailMesoWeeks = weeks;
+    renderMesoLengthPicker();
+    const plan = MESO_PLANS.find(p => p.id === currentPlanDetailId);
+    if (plan) renderPlanWeeks(plan);
+}
+
+function renderPlanWeeks(plan) {
+    const el = document.getElementById('planWeeksDisplay');
+    if (!el) return;
+    const totalWeeks = planDetailMesoWeeks;
+    el.innerHTML = Array.from({length: totalWeeks}, (_, i) => {
+        const weekNum = i + 1;
+        const { label, color } = getMesoWeekLabel(weekNum, totalWeeks);
+        const isDeload = weekNum === totalWeeks;
+        return `<div class="card" style="margin-bottom:8px;${isDeload?'opacity:0.7;':''}">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span style="font-weight:700;font-size:14px;">Woche ${weekNum}</span>
+                <span style="background:${color}22;color:${color};padding:3px 10px;border-radius:20px;font-size:11px;font-weight:800;">${label}</span>
+            </div>
+            ${isDeload ? '<div style="font-size:12px;color:var(--text2);">50% Volumen · -40% Gewicht · Aktive Erholung</div>' :
+            plan.sessions.map(s => {
+                const sets = getSetsForWeek(s, weekNum, totalWeeks);
+                return `<div style="font-size:12px;color:var(--text2);margin-bottom:4px;">
+                    <strong style="color:var(--text);">${s.name.split('—')[1]?.trim()}</strong>: ${sets.join('/')} Sätze
+                </div>`;
+            }).join('')}
+        </div>`;
+    }).join('');
+}
+
+function activatePlan() {
+    const plan = MESO_PLANS.find(p => p.id === currentPlanDetailId);
+    if (!plan) return;
+    appData.activePlan = {
+        planId: plan.id,
+        startDate: getToday(),
+        mesoWeeks: planDetailMesoWeeks,
+        daysPerWeek: planDetailDaysPerWeek,
+        completedSessions: []
+    };
+    localStorage.setItem('activePlan', JSON.stringify(appData.activePlan));
+    closePlanDetail();
+    renderActivePlanCard();
+    renderAvailablePlans();
+    updateHomeMeso();
+    showToast(`✅ ${plan.name} gestartet!`, 'success');
+}
+
+function updateHomeMeso() {
+    const el = document.getElementById('homeMesoContent');
+    if (!el) return;
+    const active = appData.activePlan;
+    if (!active) {
+        el.innerHTML = '<div style="color:var(--text2);font-size:13px;">Kein Plan aktiv — tippe hier um einen Plan auszuwählen.</div>';
+        return;
+    }
+    const plan = MESO_PLANS.find(p => p.id === active.planId);
+    if (!plan) return;
+    const startDate = new Date(active.startDate);
+    const now = new Date();
+    const daysDiff = Math.floor((now - startDate) / (1000*60*60*24));
+    const currentWeek = Math.min(Math.floor(daysDiff / 7) + 1, active.mesoWeeks);
+    const { label, color } = getMesoWeekLabel(currentWeek, active.mesoWeeks);
+    const progress = Math.round((currentWeek / active.mesoWeeks) * 100);
+
+    el.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+            <div style="font-size:28px;">${plan.emoji}</div>
+            <div style="flex:1;">
+                <div style="font-weight:800;font-size:15px;">${plan.name}</div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                    <span style="background:${color};color:#fff;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:800;">${label}</span>
+                    <span style="font-size:12px;color:var(--text2);">Woche ${currentWeek}/${active.mesoWeeks}</span>
+                </div>
+            </div>
+        </div>
+        <div class="prog-bar" style="height:6px;">
+            <div class="prog-fill" style="width:${progress}%;background:${color};"></div>
+        </div>`;
+}
+
 
 function showToast(msg, type = 'success') {
     try {
@@ -5426,13 +4737,11 @@ function showToast(msg, type = 'success') {
 
 function clearAllData() {
     if (confirm('ALLE Daten löschen? Kann nicht rückgängig gemacht werden!')) {
-        appData = { weights: [], activities: {}, workouts: [], completedExercises: {}, calisthenicsProgress: {}, runs: [], water: {}, progressionHistory: {}, weeklyGoals: { strength:4, runs:3, stretching:5, zone2:2 }, swappedExercises: {}, skillSessions: {}, checkins: {}, macros: {}, savedRecipes: [], todayRecipe: null, setLog: {}, recovery: 7, lastSessionFocus: null };
+        appData = { workouts: [], completedExercises: {}, calisthenicsProgress: {}, progressionHistory: {}, weeklyGoals: { strength:4, stretching:3 }, swappedExercises: {}, skillSessions: {}, macros: {}, savedRecipes: [], todayRecipe: null, setLog: {}, activePlan: null, recovery: 7, lastSessionFocus: null };
         localStorage.clear();
         updateDashboard();
         updateWeightHistory();
         generateCalisthenics();
-        renderRunHistory();
-        updateRunStats();
         const wd = document.getElementById('workoutDisplay');
         if (wd) wd.innerHTML = '';
         showToast('Alle Daten gelöscht', 'error');
@@ -5446,20 +4755,20 @@ function clearAllData() {
     try {
         // Set today's date on date inputs
         const todayStr = getToday();
-        ['weightDate', 'runDate'].forEach(id => {
+        [].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.value = todayStr;
         });
 
         // Lade heutigen Check-In wenn vorhanden
-        const todayCheckin = appData.checkins && appData.checkins[todayStr];
+        const todayCheckin = null;
         if (todayCheckin) {
             appData.recovery = todayCheckin.score;
-            const slider = document.getElementById('recoverySlider');
+            const slider = null; //
             if (slider) slider.value = todayCheckin.score;
-            const shEl = document.getElementById('sleepHours');
+            const shEl = null; //
             if (shEl) shEl.value = todayCheckin.sleepHours || 7.5;
-            const sqEl = document.getElementById('sleepQuality');
+            const sqEl = null; //
             if (sqEl) sqEl.value = todayCheckin.sleepQuality || 7;
             const checks = { sleepGood: todayCheckin.sleepGood, energyHigh: todayCheckin.energyHigh, noPain: todayCheckin.noPain, goodAppetite: todayCheckin.goodAppetite };
             Object.entries(checks).forEach(([id, val]) => {
@@ -5469,12 +4778,8 @@ function clearAllData() {
         }
 
         updateDashboard();
-        updateHomeWeekly();
-        updateWeightHistory();
+        updateHomeMeso();
         generateCalisthenics();
-        updateRecovery();
-        updateRunStats();
-        renderRunHistory();
         loadSettings();
         // Training wird erst generiert wenn Tab geöffnet wird (initTrainingScreen)
     } catch(e) {
